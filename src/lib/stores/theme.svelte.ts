@@ -10,6 +10,7 @@ function createThemeStore() {
 	let current = $state<Theme>(initial);
 
 	$effect.root(() => {
+		if (typeof document === 'undefined') return;
 		document.documentElement.setAttribute('data-theme', current);
 		localStorage.setItem(STORAGE_KEY, current);
 	});
