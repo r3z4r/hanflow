@@ -1,42 +1,28 @@
-# sv
+# HanFlow
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Korean Language Sandbox Canvas — interactive visual grammar breakdown of Korean sentences.
 
-## Creating a project
+Built with SvelteKit 5 (Svelte 5 Runes), @xyflow/svelte, Drizzle ORM, Auth.js v5, Redis, and the Vercel AI SDK.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Development
 
-```sh
-# create a new project
-npx sv create my-app
+```bash
+# Start local infra
+docker compose up -d
+
+# Install dependencies
+pnpm install
+
+# Start dev server
+pnpm dev
 ```
 
-To recreate this project with the same configuration:
+## Stack
 
-```sh
-# recreate this project
-npx sv@0.15.4 create --template minimal --types ts --no-install .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- **Framework:** SvelteKit + Svelte 5 (Runes)
+- **Canvas:** @xyflow/svelte
+- **Database:** PostgreSQL + Drizzle ORM
+- **Cache:** Redis (ioredis)
+- **Auth:** Auth.js v5
+- **LLM:** Vercel AI SDK (Anthropic + Gemini)
+- **Deployment:** Railway
