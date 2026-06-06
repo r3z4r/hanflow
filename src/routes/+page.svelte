@@ -36,7 +36,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-height: calc(100dvh - 52px);
+		min-height: calc(100dvh - var(--navbar-height));
 		padding: 2rem 1rem;
 	}
 
@@ -114,7 +114,7 @@
 		border-radius: var(--radius-node);
 		font-size: 0.9375rem;
 		font-weight: 600;
-		border: 1.5px solid;
+		border: 1px solid;
 	}
 
 	.token-noun {

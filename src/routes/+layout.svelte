@@ -18,6 +18,6 @@
 
 <style>
 	main {
-		min-height: calc(100dvh - 52px);
+		min-height: calc(100dvh - var(--navbar-height));
 	}
 </style>

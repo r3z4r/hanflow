@@ -39,6 +39,9 @@
   --sidebar-width-desktop: 380px;
   --bottom-sheet-height:   60vh;
 
+  /* Layout */
+  --navbar-height:         52px;
+
   /* Misc */
   --radius-node:           10px;
   --shadow-node:           0 4px 24px rgba(0, 0, 0, 0.5);

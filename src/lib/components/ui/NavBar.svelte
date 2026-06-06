@@ -20,7 +20,7 @@
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: var(--color-bg-surface);
+		background: color-mix(in srgb, var(--color-bg-surface) 85%, transparent);
 		border-bottom: 1px solid var(--color-edge);
 		backdrop-filter: blur(8px);
 	}
@@ -32,7 +32,7 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 0 1rem;
-		height: 52px;
+		height: var(--navbar-height);
 	}
 
 	.brand {
