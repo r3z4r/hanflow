@@ -1,0 +1,103 @@
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Dark Immersive (default) ───────────────────────────────────────────── */
+:root,
+[data-theme='dark'] {
+  --color-bg-canvas:       #0d0f14;
+  --color-bg-surface:      #161b22;
+  --color-bg-elevated:     #1e2430;
+  --color-bg-input:        #1a1f2b;
+
+  --color-text-primary:    #e6edf3;
+  --color-text-secondary:  #8b949e;
+  --color-text-muted:      #484f58;
+
+  --color-accent-primary:  #58a6ff;
+  --color-accent-success:  #3fb950;
+  --color-accent-danger:   #f85149;
+
+  /* Node colors */
+  --color-node-noun:       #388bfd;
+  --color-node-particle:   #a371f7;
+  --color-node-verb:       #56d364;
+  --color-node-modifier:   #6e7681;
+  --color-node-border:     rgba(255, 255, 255, 0.08);
+  --color-node-selected:   #58a6ff;
+
+  --color-edge:            #30363d;
+
+  /* Sidebar */
+  --sidebar-bg:            #161b22;
+  --sidebar-border:        #30363d;
+  --sidebar-width-desktop: 380px;
+  --bottom-sheet-height:   60vh;
+
+  /* Layout */
+  --navbar-height:         52px;
+
+  /* Misc */
+  --radius-node:           10px;
+  --shadow-node:           0 4px 24px rgba(0, 0, 0, 0.5);
+  --transition-theme:      background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+/* ── Light Academic ─────────────────────────────────────────────────────── */
+[data-theme='light'] {
+  --color-bg-canvas:       #f0f2f5;
+  --color-bg-surface:      #ffffff;
+  --color-bg-elevated:     #f6f8fa;
+  --color-bg-input:        #ffffff;
+
+  --color-text-primary:    #1c2128;
+  --color-text-secondary:  #57606a;
+  --color-text-muted:      #afb8c1;
+
+  --color-accent-primary:  #0969da;
+  --color-accent-success:  #1a7f37;
+  --color-accent-danger:   #cf222e;
+
+  --color-node-noun:       #0969da;
+  --color-node-particle:   #8250df;
+  --color-node-verb:       #1a7f37;
+  --color-node-modifier:   #6e7781;
+  --color-node-border:     rgba(0, 0, 0, 0.1);
+  --color-node-selected:   #0969da;
+
+  --color-edge:            #d0d7de;
+
+  --sidebar-bg:            #ffffff;
+  --sidebar-border:        #d0d7de;
+
+  --shadow-node:           0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Base styles ────────────────────────────────────────────────────────── */
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
+  transition: var(--transition-theme);
+}
+
+a {
+  color: var(--color-accent-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
