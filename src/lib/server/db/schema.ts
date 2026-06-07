@@ -23,7 +23,7 @@ export const users = pgTable('user', {
 	emailVerified: timestamp('email_verified', { mode: 'date' }),
 	image: text('image'),
 	passwordHash: text('password_hash'),
-	createdAt: timestamp('created_at').defaultNow().notNull()
+	createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
 });
 
 export const accounts = pgTable(
@@ -75,7 +75,7 @@ export const sentenceHistory = pgTable(
 		sentenceText: text('sentence_text').notNull(),
 		parsedResult: jsonb('parsed_result').notNull(),
 		isFavorited: boolean('is_favorited').default(false).notNull(),
-		createdAt: timestamp('created_at').defaultNow().notNull()
+		createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
 	},
 	(table) => [
 		index('sentence_history_user_id_idx').on(table.userId),
