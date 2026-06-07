@@ -1,6 +1,6 @@
-import type { DefaultSession } from '@auth/sveltekit';
+import type { DefaultSession } from '@auth/core/types';
 
-declare module '@auth/sveltekit' {
+declare module '@auth/core/types' {
 	interface Session {
 		user: {
 			id: string;
@@ -8,13 +8,11 @@ declare module '@auth/sveltekit' {
 	}
 }
 
+// App.Locals (auth, signIn, signOut) and App.PageData (session) are provided
+// globally by @auth/sveltekit/dist/types.d.ts — no redeclaration needed.
+
 declare global {
 	namespace App {
-		interface Locals {
-			auth: import('@auth/sveltekit').SvelteKitAuthConfig['callbacks'] extends object
-				? never
-				: () => Promise<import('@auth/core/types').Session | null>;
-		}
 		// interface Error {}
 		// interface PageData {}
 		// interface PageState {}
