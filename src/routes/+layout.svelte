@@ -3,14 +3,14 @@
 	import NavBar from '$lib/components/ui/NavBar.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<NavBar />
+<NavBar session={data.session} />
 
 <main>
 	{@render children()}
