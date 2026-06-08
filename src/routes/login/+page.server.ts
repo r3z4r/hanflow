@@ -8,4 +8,4 @@ export const load: PageServerLoad = async (event) => {
 	return {};
 };
 
-export const actions = { default: signIn };
+export const actions = { signIn };

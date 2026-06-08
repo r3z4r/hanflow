@@ -14,8 +14,8 @@
 
 		<!-- OAuth providers -->
 		<div class="oauth-section">
-			<form method="POST" action="?/default">
-				<input type="hidden" name="provider" value="github" />
+			<form method="POST" action="?/signIn">
+				<input type="hidden" name="providerId" value="github" />
 				<button type="submit" class="oauth-btn oauth-github">
 					<svg class="provider-icon" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -27,8 +27,8 @@
 				</button>
 			</form>
 
-			<form method="POST" action="?/default">
-				<input type="hidden" name="provider" value="google" />
+			<form method="POST" action="?/signIn">
+				<input type="hidden" name="providerId" value="google" />
 				<button type="submit" class="oauth-btn oauth-google">
 					<svg class="provider-icon" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -58,7 +58,7 @@
 		</div>
 
 		<!-- Credentials form -->
-		<form method="POST" action="?/default" class="credentials-form">
+		<form method="POST" action="?/signIn" class="credentials-form">
 			<div class="field">
 				<label for="email" class="field-label">Email</label>
 				<input

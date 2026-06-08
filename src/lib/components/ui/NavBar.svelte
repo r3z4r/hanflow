@@ -14,6 +14,8 @@
 
 	let { session = null }: { session: NavSession | null } = $props();
 
+	let imageError = $state(false);
+
 	function getInitials(name: string | null | undefined): string {
 		if (!name) return '?';
 		return name
@@ -38,11 +40,13 @@
 			<ThemeToggle />
 			{#if session?.user}
 				<div class="user-area" aria-label="Signed in as {session.user.name ?? session.user.email ?? 'User'}">
-					{#if session.user.image}
+					{#if session.user.image && !imageError}
 						<img
 							src={session.user.image}
 							alt={session.user.name ?? 'User avatar'}
 							class="avatar"
+							referrerpolicy="no-referrer"
+							onerror={() => (imageError = true)}
 						/>
 					{:else}
 						<div class="avatar avatar-initials">

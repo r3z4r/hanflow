@@ -1,6 +1,12 @@
 const STORAGE_KEY = 'hanflow-theme';
 type Theme = 'dark' | 'light';
 
+function applyTheme(t: Theme) {
+	if (typeof document === 'undefined') return;
+	document.documentElement.setAttribute('data-theme', t);
+	localStorage.setItem(STORAGE_KEY, t);
+}
+
 function createThemeStore() {
 	const initial: Theme =
 		typeof document !== 'undefined'
@@ -9,18 +15,14 @@ function createThemeStore() {
 
 	let current = $state<Theme>(initial);
 
-	$effect.root(() => {
-		if (typeof document === 'undefined') return;
-		document.documentElement.setAttribute('data-theme', current);
-		localStorage.setItem(STORAGE_KEY, current);
-	});
-
 	function toggle() {
 		current = current === 'dark' ? 'light' : 'dark';
+		applyTheme(current);
 	}
 
-	function set(theme: Theme) {
-		current = theme;
+	function set(t: Theme) {
+		current = t;
+		applyTheme(t);
 	}
 
 	return {
