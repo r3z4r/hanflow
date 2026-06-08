@@ -14,7 +14,7 @@
 
 		<!-- OAuth providers -->
 		<div class="oauth-section">
-			<form method="POST" action="/auth/signin">
+			<form method="POST" action="?/default">
 				<input type="hidden" name="provider" value="github" />
 				<button type="submit" class="oauth-btn oauth-github">
 					<svg class="provider-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -27,7 +27,7 @@
 				</button>
 			</form>
 
-			<form method="POST" action="/auth/signin">
+			<form method="POST" action="?/default">
 				<input type="hidden" name="provider" value="google" />
 				<button type="submit" class="oauth-btn oauth-google">
 					<svg class="provider-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -58,7 +58,7 @@
 		</div>
 
 		<!-- Credentials form -->
-		<form method="POST" action="/auth/signin" class="credentials-form">
+		<form method="POST" action="?/default" class="credentials-form">
 			<div class="field">
 				<label for="email" class="field-label">Email</label>
 				<input
@@ -239,7 +239,9 @@
 		border-radius: 6px;
 		color: var(--color-text-primary);
 		font-size: 0.9375rem;
-		transition: border-color 150ms ease;
+		transition:
+			border-color 150ms ease,
+			box-shadow 150ms ease;
 		outline: none;
 	}
 
@@ -249,6 +251,7 @@
 
 	.field-input:focus {
 		border-color: var(--color-accent-primary);
+		box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 30%, transparent);
 	}
 
 	.credentials-btn {

@@ -37,7 +37,7 @@
 		<div class="navbar-end">
 			<ThemeToggle />
 			{#if session?.user}
-				<div class="user-area">
+				<div class="user-area" aria-label="Signed in as {session.user.name ?? session.user.email ?? 'User'}">
 					{#if session.user.image}
 						<img
 							src={session.user.image}
@@ -45,7 +45,7 @@
 							class="avatar"
 						/>
 					{:else}
-						<div class="avatar avatar-initials" aria-hidden="true">
+						<div class="avatar avatar-initials">
 							{getInitials(session.user.name)}
 						</div>
 					{/if}
