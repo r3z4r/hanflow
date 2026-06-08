@@ -42,11 +42,12 @@ export const actions: Actions = {
       await redis.setex(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(parsed));
     }
 
-    cookies.set('hf_result', JSON.stringify(parsed), {
+    // Store only the hash — the canvas route re-fetches from Redis to avoid the 4KB cookie limit
+    cookies.set('hf_key', hash, {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 1 day (shorter than Redis TTL)
+      maxAge: 60 * 60 * 24,
       sameSite: 'lax',
     });
 
