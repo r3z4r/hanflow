@@ -14,10 +14,9 @@ import {
 	GOOGLE_CLIENT_SECRET
 } from '$env/static/private';
 
-async function verifyPassword(plain: string, hash: string): Promise<boolean> {
-	// Phase 2: basic comparison — replace with bcrypt in production
-	// For now, we stub credentials auth; OAuth is the primary path
-	return plain === hash;
+// TODO(phase-6): implement with bcrypt before enabling credentials login in production
+function verifyPassword(_plain: string, _hash: string): never {
+	throw new Error('Credentials auth not yet implemented — use OAuth providers');
 }
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
@@ -59,6 +58,8 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			return session;
 		}
 	},
+	// JWT strategy is required: database sessions use a different callback signature
+	// where token is undefined — removing this would silently break session.user.id
 	session: { strategy: 'jwt' },
 	pages: {
 		signIn: '/login',

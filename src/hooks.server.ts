@@ -1,9 +1,6 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { handle as authHandle } from './auth';
-import type { Handle } from '@sveltejs/kit';
 
-const appHandle: Handle = async ({ event, resolve }) => {
-	return resolve(event);
-};
-
-export const handle = sequence(authHandle, appHandle);
+// sequence is used here so future handles (CSP headers, rate limiting, locale)
+// can be inserted without restructuring this file
+export const handle = sequence(authHandle);
