@@ -30,8 +30,7 @@
 <header class="navbar">
 	<div class="navbar-inner">
 		<a href="/" class="brand">
-			<span class="brand-ko">한</span>
-			<span class="brand-text">Flow</span>
+			<img src="/logo.png" alt="HanFlow" class="brand-logo" />
 		</a>
 		<nav class="nav-links">
 			<a href="/history" class="nav-link">History</a>
@@ -86,21 +85,14 @@
 
 	.brand {
 		display: flex;
-		align-items: baseline;
-		gap: 2px;
+		align-items: center;
 		text-decoration: none;
-		font-weight: 700;
-		font-size: 1.125rem;
-		line-height: 1;
 	}
 
-	.brand-ko {
-		color: var(--color-node-particle);
-		font-size: 1.25rem;
-	}
-
-	.brand-text {
-		color: var(--color-text-primary);
+	.brand-logo {
+		height: 28px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	.nav-links {

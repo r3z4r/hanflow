@@ -6,8 +6,7 @@
 	<div class="login-card">
 		<div class="card-header">
 			<a href="/" class="brand">
-				<span class="brand-ko">한</span>
-				<span class="brand-text">Flow</span>
+				<img src="/logo.png" alt="HanFlow" class="brand-logo" />
 			</a>
 			<h1 class="card-title">Sign in to HanFlow</h1>
 		</div>
@@ -117,21 +116,14 @@
 
 	.brand {
 		display: flex;
-		align-items: baseline;
-		gap: 2px;
+		align-items: center;
 		text-decoration: none;
-		font-weight: 700;
-		font-size: 1.5rem;
-		line-height: 1;
 	}
 
-	.brand-ko {
-		color: var(--color-node-particle);
-		font-size: 1.75rem;
-	}
-
-	.brand-text {
-		color: var(--color-text-primary);
+	.brand-logo {
+		height: 36px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	.card-title {
