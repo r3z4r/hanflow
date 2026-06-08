@@ -76,7 +76,7 @@
 
   @media (min-width: 768px) {
     .canvas-wrapper {
-      height: 100dvh;
+      height: 100%;
     }
   }
 
