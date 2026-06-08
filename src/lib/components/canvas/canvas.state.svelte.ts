@@ -75,6 +75,10 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     isMobile = v;
   }
 
+  function setNodes(updated: Node<CanvasNodeData>[]) {
+    nodes = updated;
+  }
+
   return {
     // Reactive state (read via getters so consumers see live values)
     get nodes() { return nodes; },
@@ -88,7 +92,8 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     selectToken,
     hoverToken,
     expandVerb,
-    setMobile
+    setMobile,
+    setNodes
   };
 }
 
