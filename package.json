@@ -37,10 +37,15 @@
 		"vite": "^8.0.7"
 	},
 	"dependencies": {
+		"@ai-sdk/anthropic": "^3.0.81",
+		"@ai-sdk/google": "^3.0.80",
 		"@auth/core": "^0.34.3",
 		"@auth/drizzle-adapter": "^1.11.2",
 		"@auth/sveltekit": "^1.11.2",
+		"ai": "^6.0.197",
 		"drizzle-orm": "^0.45.2",
-		"pg": "^8.21.0"
+		"ioredis": "^5.11.1",
+		"pg": "^8.21.0",
+		"zod": "^4.4.3"
 	}
 }
