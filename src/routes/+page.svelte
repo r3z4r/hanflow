@@ -1,7 +1,7 @@
 <script lang="ts">
   import InputSandbox from '$lib/components/sandbox/InputSandbox.svelte';
 
-  let { data, form } = $props();
+  let { form } = $props();
 </script>
 
 <svelte:head>

@@ -26,10 +26,10 @@ export const actions: Actions = {
     let parsed;
     const cached = await redis.get(cacheKey);
     if (cached) {
-      const result = ParsedSentenceSchema.safeParse(JSON.parse(cached));
-      if (result.success) {
-        parsed = result.data;
-      }
+      try {
+        const result = ParsedSentenceSchema.safeParse(JSON.parse(cached));
+        if (result.success) parsed = result.data;
+      } catch { /* corrupted cache entry — fall through to LLM */ }
     }
 
     // LLM call on miss
@@ -45,6 +45,7 @@ export const actions: Actions = {
     cookies.set('hf_result', JSON.stringify(parsed), {
       path: '/',
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24, // 1 day (shorter than Redis TTL)
       sameSite: 'lax',
     });
