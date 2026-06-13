@@ -21,7 +21,7 @@
   <Handle type="source" position={Position.Left} id="source-left" />
   <div class="node-value">{data.token.value}</div>
   <div class="node-gloss">{data.token.gloss}</div>
-  <div class="node-speak">
+  <div class="node-actions">
     <SpeakButton text={data.token.value} label="Play pronunciation of {data.token.value}" />
   </div>
   <Handle type="source" position={Position.Right} id="source-right" />
@@ -58,9 +58,12 @@
     text-align: center;
     line-height: 1.3;
   }
-  .node-speak {
+  .node-actions {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    /* Sits in the corner, partially overlapping the border so it stays clear
+       of the centered .node-value text even on the narrowest mobile nodes. */
+    top: -4px;
+    right: -4px;
+    z-index: 1;
   }
 </style>
