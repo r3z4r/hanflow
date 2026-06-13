@@ -22,6 +22,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
+		/* above NavBar (z-index: 100) so the overlay covers the page content */
 		z-index: 200;
 		display: flex;
 		align-items: center;
@@ -39,6 +40,7 @@
 		max-width: 90vw;
 	}
 
+	/* Block dimensions are arbitrary decorative proportions, not design tokens */
 	.skeleton-block {
 		border-radius: var(--radius-node);
 		background: var(--color-bg-elevated);
