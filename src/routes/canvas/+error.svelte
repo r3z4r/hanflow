@@ -1,10 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	let message = $derived(
+	let headline = $derived(
+		page.status === 404 ? "This sentence couldn't be found" : "Couldn't load this sentence"
+	);
+
+	let subtitle = $derived(
 		page.status === 404
-			? "This sentence couldn't be found."
-			: (page.error?.message ?? "This sentence couldn't be loaded. Please try again.")
+			? 'The link may be broken, or the sentence is no longer available.'
+			: (page.error?.message ?? 'This may be a temporary issue with the cache or database.')
 	);
 </script>
 
@@ -15,11 +19,8 @@
 <div class="error-page">
 	<div class="content">
 		<p class="status">{page.status}</p>
-		<h1 class="headline">Couldn't load this sentence</h1>
-		<p class="subtitle">
-			{message} This may be a temporary issue with the cache or database — try analyzing the sentence
-			again.
-		</p>
+		<h1 class="headline">{headline}</h1>
+		<p class="subtitle">{subtitle}</p>
 		<a href="/" class="back-link">← Start a new analysis</a>
 	</div>
 </div>
