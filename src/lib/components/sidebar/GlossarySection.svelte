@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getCanvasContext } from '$lib/components/canvas/canvas.state.svelte';
+  import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
 
   const state = getCanvasContext();
 </script>
@@ -22,7 +23,10 @@
       <div class="examples">
         {#each entry.exampleSentences as example}
           <div class="example">
-            <p class="example-korean">{example.korean}</p>
+            <div class="example-korean-row">
+              <p class="example-korean">{example.korean}</p>
+              <SpeakButton text={example.korean} label="Play pronunciation of example sentence" />
+            </div>
             <p class="example-english">{example.english}</p>
           </div>
         {/each}
@@ -97,6 +101,12 @@
     padding: 0.5rem 0.625rem;
     background: var(--color-bg-canvas);
     border-radius: var(--radius-node);
+  }
+
+  .example-korean-row {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
   }
 
   .example-korean {
