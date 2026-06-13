@@ -3,15 +3,19 @@
 
 	let { text, label }: { text: string; label: string } = $props();
 
-	let isSpeaking = $derived(speech.speakingId === text);
+	const id = $props.id();
+
+	let isSpeaking = $derived(speech.speakingId === id);
 
 	function handleClick(event: MouseEvent) {
+		// This button often sits inside a clickable parent (e.g. an xyflow node
+		// with its own click handler) — don't let that also fire.
 		event.stopPropagation();
 
 		if (isSpeaking) {
 			speech.stop();
 		} else {
-			speech.speak(text, text);
+			speech.speak(text, id);
 		}
 	}
 </script>
@@ -22,6 +26,8 @@
 		class="speak-button"
 		class:speaking={isSpeaking}
 		aria-label={isSpeaking ? 'Stop pronunciation' : label}
+		aria-pressed={isSpeaking}
+		title={isSpeaking ? 'Stop pronunciation' : label}
 		onclick={handleClick}
 	>
 		<svg

@@ -10,6 +10,12 @@ function createSpeechStore() {
 
 	let speakingId = $state<string | null>(null);
 
+	// Some browsers load the voice list asynchronously — request it once eagerly
+	// so it's populated by the time the user first presses a speak button.
+	if (isSupported) {
+		window.speechSynthesis.getVoices();
+	}
+
 	function speak(text: string, id: string) {
 		if (!isSupported) return;
 
@@ -17,6 +23,7 @@ function createSpeechStore() {
 
 		const utterance = new SpeechSynthesisUtterance(text);
 		utterance.lang = 'ko-KR';
+		// Slightly slower than default — easier for learners to follow.
 		utterance.rate = 0.9;
 
 		const voice = pickKoreanVoice(window.speechSynthesis.getVoices());
