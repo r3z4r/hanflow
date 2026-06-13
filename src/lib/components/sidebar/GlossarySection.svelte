@@ -25,7 +25,9 @@
           <div class="example">
             <div class="example-korean-row">
               <p class="example-korean">{example.korean}</p>
-              <SpeakButton text={example.korean} label="Play pronunciation of example sentence" />
+              <div class="example-actions">
+                <SpeakButton text={example.korean} label="Play pronunciation of {example.korean}" />
+              </div>
             </div>
             <p class="example-english">{example.english}</p>
           </div>
@@ -107,6 +109,10 @@
     display: flex;
     align-items: center;
     gap: 0.375rem;
+  }
+
+  .example-actions {
+    flex-shrink: 0;
   }
 
   .example-korean {
