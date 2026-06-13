@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 			const result = ParsedSentenceSchema.safeParse(JSON.parse(cached));
 			if (result.success) return { parsedSentence: result.data };
 		} catch {
-			// noop
+			// corrupted cache entry — fall through to DB lookup
 		}
 	}
 
