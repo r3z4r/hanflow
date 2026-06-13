@@ -14,7 +14,7 @@
 	<div class="canvas-header">
 		<a href="/" class="back-link">← New sentence</a>
 		<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
-		<div class="sentence-speak">
+		<div class="sentence-actions">
 			<SpeakButton
 				text={data.parsedSentence.originalText}
 				label="Play pronunciation of the full sentence"
@@ -64,7 +64,7 @@
 		white-space: nowrap;
 	}
 
-	.sentence-speak {
+	.sentence-actions {
 		flex-shrink: 0;
 	}
 
