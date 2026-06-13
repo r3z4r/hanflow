@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ParsedSentence } from '$lib/schemas/sentence';
 	import TopologyCanvas from '$lib/components/canvas/TopologyCanvas.svelte';
+	import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
 
 	let { data }: { data: { parsedSentence: ParsedSentence } } = $props();
 </script>
@@ -13,6 +14,12 @@
 	<div class="canvas-header">
 		<a href="/" class="back-link">← New sentence</a>
 		<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
+		<div class="sentence-speak">
+			<SpeakButton
+				text={data.parsedSentence.originalText}
+				label="Play pronunciation of the full sentence"
+			/>
+		</div>
 	</div>
 	<div class="canvas-area">
 		<TopologyCanvas parsedSentence={data.parsedSentence} />
@@ -55,6 +62,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.sentence-speak {
+		flex-shrink: 0;
 	}
 
 	.canvas-area {
