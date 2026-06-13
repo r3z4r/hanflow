@@ -9,6 +9,8 @@
   import ParticleNode from './nodes/ParticleNode.svelte';
   import VerbNode from './nodes/VerbNode.svelte';
   import ParticleBridgeEdge from './edges/ParticleBridgeEdge.svelte';
+  import DeepContextSidebar from '../sidebar/DeepContextSidebar.svelte';
+  import BottomSheet from '../sidebar/BottomSheet.svelte';
 
   let { parsedSentence }: { parsedSentence: ParsedSentence } = $props();
 
@@ -63,10 +65,17 @@
     <Controls />
     <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
   </SvelteFlow>
+
+  {#if state.isMobile}
+    <BottomSheet />
+  {:else}
+    <DeepContextSidebar />
+  {/if}
 </div>
 
 <style>
   .canvas-wrapper {
+    position: relative;
     width: 100%;
     height: 60dvh;
     border-radius: 8px;
