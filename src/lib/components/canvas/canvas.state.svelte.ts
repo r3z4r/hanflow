@@ -11,6 +11,10 @@ export interface CanvasNodeData extends Record<string, unknown> {
   isExpanded: boolean; // for verb conjugation expansion
 }
 
+// ─── Sidebar types ───────────────────────────────────────────────────────────
+
+export type SidebarTab = 'phonetic' | 'grammar' | 'glossary';
+
 // ─── Build helpers ───────────────────────────────────────────────────────────
 
 function buildNodes(parsedSentence: ParsedSentence): Node<CanvasNodeData>[] {
@@ -35,6 +39,10 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
   let expandedVerbId = $state<string | null>(null);
   let isMobile = $state(false);
 
+  // Sidebar state
+  let sidebarOpen = $state(false);
+  let activeSidebarTab = $state<SidebarTab>('glossary');
+
   // Derived particle bridge edges — only shown while a particle is hovered
   const particleBridgeEdges = $derived(
     hoveredTokenId
@@ -53,10 +61,31 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
 
   const visibleEdges = $derived([...edges, ...particleBridgeEdges]);
 
+  // Derived sidebar content — keyed off the selected token
+  const selectedToken = $derived(
+    selectedTokenId ? parsedSentence.tokens.find((t) => t.id === selectedTokenId) ?? null : null
+  );
+
+  const selectedGlossaryEntry = $derived(
+    selectedTokenId
+      ? parsedSentence.glossary.find((g) => g.tokenId === selectedTokenId) ?? null
+      : null
+  );
+
+  const relevantPhoneticNotes = $derived.by(() => {
+    const tokenId = selectedTokenId;
+    return tokenId
+      ? parsedSentence.phoneticNotes.filter((n) => n.tokenIds.includes(tokenId))
+      : parsedSentence.phoneticNotes;
+  });
+
   // ── Actions ────────────────────────────────────────────────────────────────
 
   function selectToken(id: string | null) {
     selectedTokenId = id;
+    if (id !== null) {
+      sidebarOpen = true;
+    }
     // On mobile, mouseenter doesn't fire — mirror hover from selection
     if (isMobile) {
       hoveredTokenId = id;
@@ -79,6 +108,15 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     nodes = updated;
   }
 
+  function closeSidebar() {
+    sidebarOpen = false;
+    selectedTokenId = null;
+  }
+
+  function setSidebarTab(tab: SidebarTab) {
+    activeSidebarTab = tab;
+  }
+
   return {
     // Reactive state (read via getters so consumers see live values)
     get nodes() { return nodes; },
@@ -87,13 +125,21 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     get hoveredTokenId() { return hoveredTokenId; },
     get expandedVerbId() { return expandedVerbId; },
     get isMobile() { return isMobile; },
+    get sidebarOpen() { return sidebarOpen; },
+    get activeSidebarTab() { return activeSidebarTab; },
+    get selectedToken() { return selectedToken; },
+    get selectedGlossaryEntry() { return selectedGlossaryEntry; },
+    get relevantPhoneticNotes() { return relevantPhoneticNotes; },
+    get grammarNote() { return parsedSentence.grammarNote; },
 
     // Actions
     selectToken,
     hoverToken,
     expandVerb,
     setMobile,
-    setNodes
+    setNodes,
+    closeSidebar,
+    setSidebarTab
   };
 }
 
