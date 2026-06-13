@@ -42,6 +42,7 @@
 		"@auth/core": "^0.34.3",
 		"@auth/drizzle-adapter": "^1.11.2",
 		"@auth/sveltekit": "^1.11.2",
+		"@xyflow/svelte": "^1.6.0",
 		"ai": "^6.0.197",
 		"drizzle-orm": "^0.45.2",
 		"ioredis": "^5.11.1",
