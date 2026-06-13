@@ -5,9 +5,11 @@ import { hashSentence } from '$lib/utils/hash';
 import { redis } from '$lib/server/redis';
 import { parseSentence } from '$lib/server/llm/parse';
 import { ParsedSentenceSchema } from '$lib/schemas/sentence';
+import { db } from '$lib/server/db';
+import { sentenceHistory } from '$lib/server/db/schema';
 
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, locals }) => {
     const data = await request.formData();
     const sentence = (data.get('sentence') as string | null)?.trim() ?? '';
 
@@ -40,6 +42,20 @@ export const actions: Actions = {
         return fail(500, { error: 'Failed to analyse sentence. Please try again.' });
       }
       await redis.setex(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(parsed));
+    }
+
+    const session = await locals.auth();
+    if (session?.user?.id) {
+      try {
+        await db.insert(sentenceHistory).values({
+          userId: session.user.id,
+          sentenceHash: hash,
+          sentenceText: sentence,
+          parsedResult: parsed,
+        });
+      } catch (err) {
+        console.error('Failed to persist sentence history:', err);
+      }
     }
 
     // Store only the hash — the canvas route re-fetches from Redis to avoid the 4KB cookie limit
