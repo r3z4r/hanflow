@@ -16,10 +16,12 @@
 </script>
 
 <div class="token-node" class:selected style="--node-color: {color}">
-  <Handle type="target" position={Position.Left} />
+  <Handle type="target" position={Position.Left} id="target-left" />
+  <Handle type="source" position={Position.Left} id="source-left" />
   <div class="node-value">{data.token.value}</div>
   <div class="node-gloss">{data.token.gloss}</div>
-  <Handle type="source" position={Position.Right} />
+  <Handle type="source" position={Position.Right} id="source-right" />
+  <Handle type="target" position={Position.Right} id="target-right" />
 </div>
 
 <style>

@@ -51,7 +51,9 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
           .map((b) => ({
             id: `bridge-${b.particleTokenId}-${b.nounTokenId}`,
             source: b.particleTokenId,
+            sourceHandle: 'source-left',
             target: b.nounTokenId,
+            targetHandle: 'target-right',
             type: 'particleBridge',
             animated: true,
             data: { relationLabel: b.relationLabel }

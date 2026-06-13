@@ -11,6 +11,7 @@
   import ParticleBridgeEdge from './edges/ParticleBridgeEdge.svelte';
   import DeepContextSidebar from '../sidebar/DeepContextSidebar.svelte';
   import BottomSheet from '../sidebar/BottomSheet.svelte';
+  import FitViewOnLayoutChange from './FitViewOnLayoutChange.svelte';
 
   let { parsedSentence }: { parsedSentence: ParsedSentence } = $props();
 
@@ -51,20 +52,23 @@
 </script>
 
 <div class="canvas-wrapper">
-  <SvelteFlow
-    bind:nodes={() => state.nodes, state.setNodes}
-    edges={state.visibleEdges}
-    {nodeTypes}
-    {edgeTypes}
-    nodesDraggable={!state.isMobile}
-    fitView
-    onnodeclick={({ node }) => state.selectToken(node.id)}
-    onnodepointerenter={({ node }) => state.hoverToken(node.id)}
-    onnodepointerleave={() => state.hoverToken(null)}
-  >
-    <Controls />
-    <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
-  </SvelteFlow>
+  <div class="flow-area" class:sidebar-open={state.sidebarOpen && !state.isMobile}>
+    <SvelteFlow
+      bind:nodes={() => state.nodes, state.setNodes}
+      edges={state.visibleEdges}
+      {nodeTypes}
+      {edgeTypes}
+      nodesDraggable={!state.isMobile}
+      fitView
+      onnodeclick={({ node }) => state.selectToken(node.id)}
+      onnodepointerenter={({ node }) => state.hoverToken(node.id)}
+      onnodepointerleave={() => state.hoverToken(null)}
+    >
+      <Controls />
+      <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
+      <FitViewOnLayoutChange />
+    </SvelteFlow>
+  </div>
 
   {#if state.isMobile}
     <BottomSheet />
@@ -87,6 +91,16 @@
     .canvas-wrapper {
       height: 100%;
     }
+  }
+
+  .flow-area {
+    position: absolute;
+    inset: 0;
+    transition: right 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .flow-area.sidebar-open {
+    right: var(--sidebar-width-desktop);
   }
 
   :global(.svelte-flow) {
