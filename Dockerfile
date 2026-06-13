@@ -17,14 +17,21 @@ COPY . .
 # be *defined* (even as empty strings) for `pnpm build` to succeed. Pass real
 # values with --build-arg if a build needs them baked in; otherwise the app
 # reads the actual secrets from the runtime environment via adapter-node.
+# NOTE: this list only covers vars imported from $env/static/private — it is
+# NOT the full runtime configuration surface. See .env.example for that.
+# Database
 ARG DATABASE_URL=""
+# Auth.js
 ARG AUTH_SECRET=""
 ARG AUTH_TRUST_HOST=""
+# OAuth providers
 ARG GITHUB_CLIENT_ID=""
 ARG GITHUB_CLIENT_SECRET=""
 ARG GOOGLE_CLIENT_ID=""
 ARG GOOGLE_CLIENT_SECRET=""
+# Cache
 ARG REDIS_URL=""
+# LLM providers
 ARG ANTHROPIC_API_KEY=""
 ARG GOOGLE_GENERATIVE_AI_API_KEY=""
 ENV DATABASE_URL=${DATABASE_URL} \
