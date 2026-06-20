@@ -61,7 +61,7 @@
       class="submit-btn"
       disabled={submitting || !!clientError || !value.trim()}
     >
-      {submitting ? 'Analysing…' : 'Analyse'}
+      {submitting ? 'Analysing…' : actionData?.error ? 'Try again' : 'Analyse'}
     </button>
   </form>
 </section>

@@ -6,6 +6,9 @@
 	"packageManager": "pnpm@10.30.3",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:full": "pnpm services:up && vite dev",
+		"services:up": "(docker compose up -d postgres redis 2>/dev/null || docker-compose up -d postgres redis)",
+		"services:down": "(docker compose down 2>/dev/null || docker-compose down)",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
