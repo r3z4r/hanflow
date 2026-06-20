@@ -2,6 +2,7 @@
 	import type { ParsedSentence } from '$lib/schemas/sentence';
 	import TopologyCanvas from '$lib/components/canvas/TopologyCanvas.svelte';
 	import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
+	import DisplayOptions from '$lib/components/ui/DisplayOptions.svelte';
 
 	let { data }: { data: { parsedSentence: ParsedSentence } } = $props();
 </script>
@@ -25,6 +26,7 @@
 				text={data.parsedSentence.originalText}
 				label="Play pronunciation of the full sentence"
 			/>
+			<DisplayOptions />
 		</div>
 	</div>
 	<div class="canvas-area">
@@ -97,6 +99,9 @@
 
 	.sentence-actions {
 		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	.canvas-area {

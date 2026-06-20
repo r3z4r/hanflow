@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Handle, Position } from '@xyflow/svelte';
   import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
+  import { display } from '$lib/utils/display.svelte';
   import type { CanvasNodeData } from '../canvas.state.svelte';
 
   let { data, selected = false }: { data: CanvasNodeData; selected?: boolean } = $props();
@@ -22,7 +23,9 @@
     <Handle type="source" position={Position.Left} id="source-left" />
   {/if}
   <div class="node-value">{data.token.value}</div>
-  <div class="node-gloss">{data.token.gloss}</div>
+  {#if display.glossVisible}
+    <div class="node-gloss">{data.token.gloss}</div>
+  {/if}
   <div class="node-actions">
     <SpeakButton text={data.token.value} label="Play pronunciation of {data.token.value}" />
   </div>

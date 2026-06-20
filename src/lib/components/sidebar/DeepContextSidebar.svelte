@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getCanvasContext } from '$lib/components/canvas/canvas.state.svelte';
   import type { SidebarTab } from '$lib/components/canvas/canvas.state.svelte';
+  import { display } from '$lib/utils/display.svelte';
   import PhoneticSection from './PhoneticSection.svelte';
   import GrammarSection from './GrammarSection.svelte';
   import GlossarySection from './GlossarySection.svelte';
@@ -38,6 +39,9 @@
   {#if state.selectedToken}
     <div class="selected-token-info">
       <span class="token-value">{state.selectedToken.value}</span>
+      {#if display.romanizationVisible}
+        <span class="token-romanization">{state.selectedToken.romanization}</span>
+      {/if}
       <span class="token-gloss">{state.selectedToken.gloss}</span>
     </div>
   {/if}
@@ -135,6 +139,12 @@
     font-size: 1rem;
     font-weight: 600;
     color: var(--color-text-primary);
+  }
+
+  .token-romanization {
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
   }
 
   .token-gloss {
