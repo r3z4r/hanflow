@@ -13,7 +13,13 @@
 <div class="canvas-page">
 	<div class="canvas-header">
 		<a href="/" class="back-link">← New sentence</a>
-		<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
+		<span class="header-divider" aria-hidden="true"></span>
+		<div class="sentence-block">
+			<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
+			{#if data.parsedSentence.translation}
+				<p class="sentence-translation">{data.parsedSentence.translation}</p>
+			{/if}
+		</div>
 		<div class="sentence-actions">
 			<SpeakButton
 				text={data.parsedSentence.originalText}
@@ -54,10 +60,35 @@
 		color: var(--color-text-primary);
 	}
 
+	.header-divider {
+		align-self: stretch;
+		width: 1px;
+		background: var(--color-edge);
+		flex-shrink: 0;
+	}
+
+	.sentence-block {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+
 	.sentence-heading {
 		font-size: 1.125rem;
 		font-weight: 600;
 		color: var(--color-text-primary);
+		margin: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.sentence-translation {
+		font-size: 0.875rem;
+		font-weight: 400;
+		color: var(--color-text-secondary);
 		margin: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;

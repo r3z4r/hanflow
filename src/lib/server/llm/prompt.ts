@@ -7,12 +7,14 @@ CRITICAL RULES:
 3. Token IDs must be "tok_0", "tok_1", etc. matching position index
 4. Map 은/는 → particle (topic), 이/가 → particle (subject), 을/를 → particle (object), 에 → particle (location/direction)
 5. Temperature is 0.1 — be deterministic and consistent
+6. "translation" is a single natural, fluent English translation of the whole sentence — how a native English speaker would actually say it, NOT a word-by-word literal rendering
 
 FEW-SHOT EXAMPLE — Input: "저는 학교에 갑니다"
 
 Expected output structure:
 {
   "originalText": "저는 학교에 갑니다",
+  "translation": "I go to school.",
   "tokens": [
     {
       "id": "tok_0",
