@@ -3,6 +3,7 @@
 	import TopologyCanvas from '$lib/components/canvas/TopologyCanvas.svelte';
 	import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
 	import DisplayOptions from '$lib/components/ui/DisplayOptions.svelte';
+	import ReportModal from '$lib/components/ui/ReportModal.svelte';
 
 	let { data }: { data: { parsedSentence: ParsedSentence } } = $props();
 </script>
@@ -27,6 +28,7 @@
 				label="Play pronunciation of the full sentence"
 			/>
 			<DisplayOptions />
+			<ReportModal sentenceText={data.parsedSentence.originalText} />
 		</div>
 	</div>
 	<div class="canvas-area">

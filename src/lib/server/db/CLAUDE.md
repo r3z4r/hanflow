@@ -5,7 +5,7 @@
 - **Auth.js v5 required tables** (DrizzleAdapter contract — don't rename columns
   without updating the adapter config in `src/auth.ts`): `users`, `accounts`,
   `sessions`, `verificationTokens`.
-- **`sentenceHistory`** — the only app-specific table:
+- **`sentenceHistory`** — the main app-specific table:
   - `userId` is **nullable** with `onDelete: 'set null'` — history rows survive user
     deletion (anonymized), unlike `accounts`/`sessions` which cascade-delete with the
     user.
@@ -15,6 +15,10 @@
     change.
   - Indexed on `userId` (history page query) and `sentenceHash` (canvas fallback
     lookup by hash).
+- **`parseFeedback`** — "report incorrect parse" submissions (`sentenceHash`,
+  `sentenceText`, optional `reason`, nullable `userId` → `set null`). Written only by
+  `POST /api/feedback` (hashes the text server-side via `hashSentence`; no auth
+  required). Indexed on `sentenceHash`. Read it via `pnpm db:studio`.
 
 After changing `schema.ts`: `pnpm db:generate` (writes a migration under
 `drizzle/migrations`, per `drizzle.config.ts`) then `pnpm db:migrate`. `pnpm db:studio`
