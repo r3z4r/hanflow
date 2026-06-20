@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
-  import { SvelteFlow, Controls, Background, BackgroundVariant } from '@xyflow/svelte';
+  import { SvelteFlow, Background, BackgroundVariant, Panel } from '@xyflow/svelte';
   import '@xyflow/svelte/dist/style.css';
   import { createCanvasState, setCanvasContext } from './canvas.state.svelte';
   import type { ParsedSentence } from '$lib/schemas/sentence';
@@ -9,6 +9,7 @@
   import ParticleNode from './nodes/ParticleNode.svelte';
   import VerbNode from './nodes/VerbNode.svelte';
   import ParticleBridgeEdge from './edges/ParticleBridgeEdge.svelte';
+  import CanvasLegend from './CanvasLegend.svelte';
   import DeepContextSidebar from '../sidebar/DeepContextSidebar.svelte';
   import BottomSheet from '../sidebar/BottomSheet.svelte';
   import FitViewOnLayoutChange from './FitViewOnLayoutChange.svelte';
@@ -64,8 +65,10 @@
       onnodepointerenter={({ node }) => state.hoverToken(node.id)}
       onnodepointerleave={() => state.hoverToken(null)}
     >
-      <Controls />
-      <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
+      <Background variant={BackgroundVariant.Dots} gap={20} size={0} />
+      <Panel position="bottom-left">
+        <CanvasLegend />
+      </Panel>
       <FitViewOnLayoutChange />
     </SvelteFlow>
   </div>

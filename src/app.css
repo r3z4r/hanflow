@@ -102,6 +102,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.svelte-flow__attribution {
+  display: none;
+}
+
 @keyframes dash {
   to { stroke-dashoffset: -9; }
 }

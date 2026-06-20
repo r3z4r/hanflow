@@ -17,15 +17,19 @@
 </script>
 
 <div class="token-node" class:selected style="--node-color: {color}">
-  <Handle type="target" position={Position.Left} id="target-left" />
-  <Handle type="source" position={Position.Left} id="source-left" />
+  {#if !data.isFirst}
+    <Handle type="target" position={Position.Left} id="target-left" />
+    <Handle type="source" position={Position.Left} id="source-left" />
+  {/if}
   <div class="node-value">{data.token.value}</div>
   <div class="node-gloss">{data.token.gloss}</div>
   <div class="node-actions">
     <SpeakButton text={data.token.value} label="Play pronunciation of {data.token.value}" />
   </div>
-  <Handle type="source" position={Position.Right} id="source-right" />
-  <Handle type="target" position={Position.Right} id="target-right" />
+  {#if !data.isLast}
+    <Handle type="source" position={Position.Right} id="source-right" />
+    <Handle type="target" position={Position.Right} id="target-right" />
+  {/if}
 </div>
 
 <style>
@@ -60,10 +64,10 @@
   }
   .node-actions {
     position: absolute;
-    /* Sits in the corner, partially overlapping the border so it stays clear
-       of the centered .node-value text even on the narrowest mobile nodes. */
-    top: -4px;
-    right: -4px;
+    /* Inset from the corner so the icon stays inside the node border instead of
+       overlapping it. */
+    top: 2px;
+    right: 2px;
     z-index: 1;
   }
 </style>

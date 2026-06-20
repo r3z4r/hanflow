@@ -9,6 +9,8 @@ export interface CanvasNodeData extends Record<string, unknown> {
   isSelected: boolean;
   isHovered: boolean;
   isExpanded: boolean; // for verb conjugation expansion
+  isFirst: boolean; // leftmost node — no incoming connection on its left
+  isLast: boolean; // rightmost node — no outgoing connection on its right
 }
 
 // ─── Sidebar types ───────────────────────────────────────────────────────────
@@ -18,11 +20,19 @@ export type SidebarTab = 'phonetic' | 'grammar' | 'glossary';
 // ─── Build helpers ───────────────────────────────────────────────────────────
 
 function buildNodes(parsedSentence: ParsedSentence): Node<CanvasNodeData>[] {
-  return parsedSentence.tokens.map((token) => ({
+  const lastIndex = parsedSentence.tokens.length - 1;
+  return parsedSentence.tokens.map((token, i) => ({
     id: token.id,
     type: token.type, // matches nodeTypes key in TopologyCanvas
     position: { x: token.position * 160, y: 200 },
-    data: { token, isSelected: false, isHovered: false, isExpanded: false }
+    data: {
+      token,
+      isSelected: false,
+      isHovered: false,
+      isExpanded: false,
+      isFirst: i === 0,
+      isLast: i === lastIndex
+    }
   }));
 }
 
@@ -56,6 +66,10 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
             targetHandle: 'target-right',
             type: 'particleBridge',
             animated: true,
+            // Lift above the nodes layer — EdgeLabel inherits the edge's zIndex, and
+            // without this the relation label ("topic", "destination", …) renders
+            // under the node boxes (nodes paint after edge-labels in xyflow's DOM).
+            zIndex: 1001,
             data: { relationLabel: b.relationLabel }
           }))
       : []
