@@ -4,8 +4,18 @@
 	import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
 	import DisplayOptions from '$lib/components/ui/DisplayOptions.svelte';
 	import ReportModal from '$lib/components/ui/ReportModal.svelte';
+	import ShareButton from '$lib/components/ui/ShareButton.svelte';
+	import FavoriteButton from '$lib/components/ui/FavoriteButton.svelte';
 
-	let { data }: { data: { parsedSentence: ParsedSentence } } = $props();
+	let {
+		data
+	}: {
+		data: {
+			parsedSentence: ParsedSentence;
+			hash: string;
+			favorite: { id: string; isFavorited: boolean } | null;
+		};
+	} = $props();
 </script>
 
 <svelte:head>
@@ -28,6 +38,10 @@
 				label="Play pronunciation of the full sentence"
 			/>
 			<DisplayOptions />
+			<ShareButton hash={data.hash} />
+			{#if data.favorite}
+				<FavoriteButton historyId={data.favorite.id} isFavorited={data.favorite.isFavorited} />
+			{/if}
 			<ReportModal sentenceText={data.parsedSentence.originalText} />
 		</div>
 	</div>
