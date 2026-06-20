@@ -114,17 +114,22 @@ src/
 │   │   ├── sidebar/                 # → src/lib/components/sidebar/CLAUDE.md
 │   │   ├── sandbox/InputSandbox.svelte   # home page form (Hangul validation, loading state via `enhance`)
 │   │   ├── history/HistoryCard.svelte
-│   │   └── ui/                      # NavBar, ThemeToggle, LoadingOverlay, SpeakButton
+│   │   └── ui/                      # NavBar, ThemeToggle, LoadingOverlay, SpeakButton,
+│   │                                #   DisplayOptions, ReportModal, ShareButton, FavoriteButton
 │   ├── stores/theme.svelte.ts       # dark/light theme, persisted to localStorage
 │   └── utils/
 │       ├── hash.ts                  # SHA-256, NFC-normalized — basis of the Redis cache key
-│       └── speech.svelte.ts         # Web Speech API (ko-KR TTS) singleton, used by SpeakButton
+│       ├── speech.svelte.ts         # Web Speech API (ko-KR TTS) singleton + adjustable rate
+│       ├── display.svelte.ts        # learner display prefs (gloss/romanization), persisted
+│       ├── parsing.svelte.ts        # "analysis in progress" flag for the LoadingOverlay
+│       └── recents.svelte.ts        # last 3 analysed sentences (localStorage)
 └── routes/
     ├── +page.svelte / +page.server.ts        # home — sentence input, parse pipeline (form action)
     ├── canvas/+page.svelte / +page.server.ts # topology canvas + sidebar
     ├── history/                      # paginated sentence history + favorites (auth-gated)
     ├── login/, auth/[...nextauth]/   # Auth.js
-    └── api/favorite/+server.ts       # PATCH toggle is_favorited
+    ├── api/favorite/+server.ts       # PATCH toggle is_favorited
+    └── api/feedback/+server.ts       # POST report-incorrect-parse → parse_feedback
 ```
 
 ## Parse pipeline (core data flow)

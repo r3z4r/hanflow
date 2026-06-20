@@ -102,6 +102,10 @@
 		border-color: var(--color-accent-primary);
 	}
 
+	.trigger:active {
+		transform: scale(0.96);
+	}
+
 	.popover {
 		position: absolute;
 		top: calc(100% + 0.5rem);

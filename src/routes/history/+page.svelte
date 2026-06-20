@@ -13,7 +13,22 @@
 	<h1>Your History</h1>
 
 	{#if data.items.length === 0}
-		<p class="empty-state">Your analyzed sentences will appear here.</p>
+		<div class="empty-state">
+			<svg
+				class="empty-icon"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				aria-hidden="true"
+			>
+				<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+				<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+			</svg>
+			<h2 class="empty-title">No sentences yet</h2>
+			<p class="empty-text">Sentences you analyze will be saved here for review.</p>
+			<a href="/" class="empty-cta">Analyze a sentence</a>
+		</div>
 	{:else}
 		<div class="history-grid">
 			{#each data.items as item (item.id)}
@@ -54,7 +69,52 @@
 	}
 
 	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 0.75rem;
+		padding: 4rem 1rem;
+	}
+
+	.empty-icon {
+		width: 3rem;
+		height: 3rem;
 		color: var(--color-text-muted);
+	}
+
+	.empty-title {
+		margin: 0;
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: var(--color-text-primary);
+	}
+
+	.empty-text {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-text-secondary);
+		max-width: 320px;
+	}
+
+	.empty-cta {
+		margin-top: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		background: var(--color-accent-primary);
+		color: #fff;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		text-decoration: none;
+		border-radius: 8px;
+		transition: opacity 150ms ease;
+	}
+
+	.empty-cta:hover {
+		opacity: 0.85;
+	}
+
+	.empty-cta:active {
+		transform: scale(0.96);
 	}
 
 	.history-grid {

@@ -142,4 +142,8 @@
   .coachmark-button:hover {
     opacity: 0.85;
   }
+
+  .coachmark-button:active {
+    transform: scale(0.97);
+  }
 </style>

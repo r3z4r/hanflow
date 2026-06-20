@@ -189,6 +189,10 @@
     opacity: 0.85;
   }
 
+  .submit-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
   .submit-btn:disabled {
     opacity: 0.45;
     cursor: not-allowed;
@@ -237,6 +241,10 @@
     border-color: var(--color-accent-primary);
     color: var(--color-text-primary);
     background: var(--color-bg-elevated);
+  }
+
+  .chip:active {
+    transform: scale(0.96);
   }
 
   @media (min-width: 768px) {

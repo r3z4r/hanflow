@@ -24,7 +24,7 @@
 
 <div class="canvas-page">
 	<div class="canvas-header">
-		<a href="/" class="back-link">← New sentence</a>
+		<a href="/" class="back-link">←<span class="back-text"> New sentence</span></a>
 		<span class="header-divider" aria-hidden="true"></span>
 		<div class="sentence-block">
 			<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
@@ -117,7 +117,16 @@
 		flex-shrink: 0;
 		display: flex;
 		align-items: center;
+		justify-content: flex-end;
+		flex-wrap: wrap;
 		gap: 0.5rem;
+	}
+
+	@media (max-width: 767px) {
+		/* Reclaim width for the sentence + action icons on small screens. */
+		.back-text {
+			display: none;
+		}
 	}
 
 	.canvas-area {

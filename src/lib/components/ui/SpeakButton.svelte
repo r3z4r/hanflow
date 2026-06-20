@@ -72,6 +72,10 @@
 		color: var(--color-text-primary);
 	}
 
+	.speak-button:active {
+		transform: scale(0.96);
+	}
+
 	.speak-button.speaking {
 		color: var(--color-accent-primary);
 	}

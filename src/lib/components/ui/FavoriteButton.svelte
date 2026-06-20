@@ -71,6 +71,10 @@
 		border-color: var(--color-accent-primary);
 	}
 
+	.favorite-button:active {
+		transform: scale(0.96);
+	}
+
 	.favorite-button.active {
 		color: var(--color-accent-primary);
 		border-color: var(--color-accent-primary);

@@ -59,6 +59,10 @@
 		border-color: var(--color-accent-primary);
 	}
 
+	.share-button:active {
+		transform: scale(0.96);
+	}
+
 	.share-button.copied {
 		color: var(--color-node-verb);
 		border-color: var(--color-node-verb);

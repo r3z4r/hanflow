@@ -112,6 +112,10 @@
 		border-color: var(--color-accent-primary);
 	}
 
+	.report-trigger:active {
+		transform: scale(0.96);
+	}
+
 	.report-trigger svg {
 		width: 1rem;
 		height: 1rem;
@@ -226,5 +230,10 @@
 	.btn-primary:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	.btn-primary:active:not(:disabled),
+	.btn-ghost:active {
+		transform: scale(0.97);
 	}
 </style>
