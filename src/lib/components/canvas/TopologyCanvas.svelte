@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
-  import { SvelteFlow, Background, BackgroundVariant, Panel } from '@xyflow/svelte';
+  import { SvelteFlow, Background, BackgroundVariant, Panel, Controls } from '@xyflow/svelte';
   import '@xyflow/svelte/dist/style.css';
   import { createCanvasState, setCanvasContext } from './canvas.state.svelte';
   import type { ParsedSentence } from '$lib/schemas/sentence';
@@ -10,6 +10,7 @@
   import VerbNode from './nodes/VerbNode.svelte';
   import ParticleBridgeEdge from './edges/ParticleBridgeEdge.svelte';
   import CanvasLegend from './CanvasLegend.svelte';
+  import CanvasCoachmark from './CanvasCoachmark.svelte';
   import DeepContextSidebar from '../sidebar/DeepContextSidebar.svelte';
   import BottomSheet from '../sidebar/BottomSheet.svelte';
   import FitViewOnLayoutChange from './FitViewOnLayoutChange.svelte';
@@ -66,11 +67,24 @@
       onnodepointerleave={() => state.hoverToken(null)}
     >
       <Background variant={BackgroundVariant.Dots} gap={20} size={0} />
+      <Controls showLock={false} />
+      <Panel position="top-right">
+        <button
+          type="button"
+          class="bridge-toggle"
+          class:active={state.showAllBridges}
+          aria-pressed={state.showAllBridges}
+          onclick={() => state.toggleAllBridges()}
+        >
+          Show connections
+        </button>
+      </Panel>
       <Panel position="bottom-left">
         <CanvasLegend />
       </Panel>
       <FitViewOnLayoutChange />
     </SvelteFlow>
+    <CanvasCoachmark />
   </div>
 
   {#if state.isMobile}
@@ -108,5 +122,48 @@
 
   :global(.svelte-flow) {
     background: var(--color-bg-canvas);
+  }
+
+  .bridge-toggle {
+    padding: 0.375rem 0.75rem;
+    background: color-mix(in srgb, var(--color-bg-surface) 88%, transparent);
+    border: 1px solid var(--color-edge);
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+
+  .bridge-toggle:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-accent-primary);
+  }
+
+  .bridge-toggle.active {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: #fff;
+  }
+
+  /* Theme the xyflow zoom/pan controls to match dark/light tokens. */
+  :global(.svelte-flow__controls) {
+    box-shadow: none;
+  }
+
+  :global(.svelte-flow__controls-button) {
+    background: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-edge);
+  }
+
+  :global(.svelte-flow__controls-button:hover) {
+    background: var(--color-bg-elevated);
+  }
+
+  :global(.svelte-flow__controls-button svg) {
+    fill: var(--color-text-secondary);
   }
 </style>

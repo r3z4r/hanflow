@@ -1,6 +1,6 @@
 import { getContext, setContext } from 'svelte';
 import type { Node, Edge } from '@xyflow/svelte';
-import type { Token, ParsedSentence } from '$lib/schemas/sentence';
+import type { Token, ParsedSentence, ParticleBridge } from '$lib/schemas/sentence';
 
 // ─── Node data type ──────────────────────────────────────────────────────────
 
@@ -36,6 +36,22 @@ function buildNodes(parsedSentence: ParsedSentence): Node<CanvasNodeData>[] {
   }));
 }
 
+function toBridgeEdge(b: ParticleBridge): Edge {
+  return {
+    id: `bridge-${b.particleTokenId}-${b.nounTokenId}`,
+    source: b.particleTokenId,
+    sourceHandle: 'source-left',
+    target: b.nounTokenId,
+    targetHandle: 'target-right',
+    type: 'particleBridge',
+    animated: true,
+    // Lift above the nodes layer so the relation label isn't hidden (see
+    // edges/ParticleBridgeEdge + canvas CLAUDE.md).
+    zIndex: 1001,
+    data: { relationLabel: b.relationLabel }
+  };
+}
+
 // ─── State factory ───────────────────────────────────────────────────────────
 
 export function createCanvasState(parsedSentence: ParsedSentence) {
@@ -48,32 +64,23 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
   let hoveredTokenId = $state<string | null>(null);
   let expandedVerbId = $state<string | null>(null);
   let isMobile = $state(false);
+  let showAllBridges = $state(false);
 
   // Sidebar state
   let sidebarOpen = $state(false);
   let activeSidebarTab = $state<SidebarTab>('glossary');
 
-  // Derived particle bridge edges — only shown while a particle is hovered
-  const particleBridgeEdges = $derived(
-    hoveredTokenId
-      ? parsedSentence.particleBridges
-          .filter((b) => b.particleTokenId === hoveredTokenId)
-          .map((b) => ({
-            id: `bridge-${b.particleTokenId}-${b.nounTokenId}`,
-            source: b.particleTokenId,
-            sourceHandle: 'source-left',
-            target: b.nounTokenId,
-            targetHandle: 'target-right',
-            type: 'particleBridge',
-            animated: true,
-            // Lift above the nodes layer — EdgeLabel inherits the edge's zIndex, and
-            // without this the relation label ("topic", "destination", …) renders
-            // under the node boxes (nodes paint after edge-labels in xyflow's DOM).
-            zIndex: 1001,
-            data: { relationLabel: b.relationLabel }
-          }))
-      : []
-  );
+  // Derived particle bridge edges. With "show connections" on, all bridges are
+  // shown at once; otherwise only the hovered/tapped particle's bridge.
+  const particleBridgeEdges = $derived.by(() => {
+    if (showAllBridges) return parsedSentence.particleBridges.map(toBridgeEdge);
+    if (hoveredTokenId) {
+      return parsedSentence.particleBridges
+        .filter((b) => b.particleTokenId === hoveredTokenId)
+        .map(toBridgeEdge);
+    }
+    return [];
+  });
 
   const visibleEdges = $derived([...edges, ...particleBridgeEdges]);
 
@@ -120,6 +127,10 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     isMobile = v;
   }
 
+  function toggleAllBridges() {
+    showAllBridges = !showAllBridges;
+  }
+
   function setNodes(updated: Node<CanvasNodeData>[]) {
     nodes = updated;
   }
@@ -141,6 +152,7 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     get hoveredTokenId() { return hoveredTokenId; },
     get expandedVerbId() { return expandedVerbId; },
     get isMobile() { return isMobile; },
+    get showAllBridges() { return showAllBridges; },
     get sidebarOpen() { return sidebarOpen; },
     get activeSidebarTab() { return activeSidebarTab; },
     get selectedToken() { return selectedToken; },
@@ -153,6 +165,7 @@ export function createCanvasState(parsedSentence: ParsedSentence) {
     hoverToken,
     expandVerb,
     setMobile,
+    toggleAllBridges,
     setNodes,
     closeSidebar,
     setSidebarTab

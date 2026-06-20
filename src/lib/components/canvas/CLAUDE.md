@@ -14,6 +14,9 @@ bridge" edges and click-to-expand verb conjugation.
 - `CanvasLegend.svelte` — color-coding key (noun / particle / verb / other), rendered in
   a bottom-left `<Panel>`. Its type→color groups must stay in sync with
   `TokenNode.svelte`'s `colorVar()` and the `--color-node-*` tokens in `app.css`.
+- `CanvasCoachmark.svelte` — first-visit overlay (3 tips), self-contained: gates on
+  `localStorage['hanflow:coachmark-seen']`, dismiss via button / backdrop / Escape.
+  Rendered once over `canvas-wrapper`; renders nothing after it's been seen.
 - `nodes/`
   - `TokenNode.svelte` — base node: value, gloss, color border by type, `SpeakButton`
     in a `.node-actions` corner badge, and the 4 handles described below.
@@ -37,11 +40,12 @@ bridge" edges and click-to-expand verb conjugation.
 - Context key: `Symbol.for('canvas')` via `setCanvasContext`/`getCanvasContext`. Every
   node/edge/sidebar component reads this — it's the only way they access
   `parsedSentence`, selection state, etc.
-- `particleBridgeEdges` is `$derived` from `hoveredTokenId` — a bridge edge only
-  exists while its particle token is hovered, then gets spread into `visibleEdges`
-  alongside the base `edges` array (currently always empty — all real edges are
-  hover-derived bridges). Bridge construction hardcodes handle IDs `source-left` /
-  `target-right` (see "Handle IDs" below).
+- `particleBridgeEdges` is `$derived` from `hoveredTokenId` **and** `showAllBridges` —
+  when the "Show connections" toggle is on (`toggleAllBridges()`), every bridge renders
+  at once; otherwise only the hovered/tapped particle's bridge. Edges are built by the
+  module-level `toBridgeEdge()` helper and spread into `visibleEdges` alongside the base
+  `edges` array (currently always empty — all real edges are derived bridges). Bridge
+  construction hardcodes handle IDs `source-left` / `target-right` (see "Handle IDs").
 - `selectToken(id)`: on mobile, also sets `hoveredTokenId = id` because `pointerenter`
   never fires on touch — this is what makes particle bridges appear on tap, not just
   hover.
@@ -60,6 +64,9 @@ bridge" edges and click-to-expand verb conjugation.
 - Mobile breakpoint: `matchMedia('(max-width: 768px)')` → `state.setMobile(...)`,
   drives `nodesDraggable={!isMobile}` and the Sidebar-vs-BottomSheet choice in
   `TopologyCanvas`'s template (see `src/lib/components/sidebar/CLAUDE.md`).
+- In-canvas chrome: xyflow `<Controls>` (zoom/pan, themed via `:global` overrides since
+  xyflow's defaults are light), a top-right "Show connections" toggle `<Panel>`, the
+  bottom-left legend `<Panel>`, and the `CanvasCoachmark` overlay.
 
 ## Handle IDs
 
