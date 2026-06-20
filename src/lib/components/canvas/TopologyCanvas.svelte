@@ -67,7 +67,7 @@
       onnodepointerleave={() => state.hoverToken(null)}
     >
       <Background variant={BackgroundVariant.Dots} gap={20} size={0} />
-      <Controls showLock={false} />
+      <Controls position="top-left" showLock={false} />
       <Panel position="top-right">
         <button
           type="button"
