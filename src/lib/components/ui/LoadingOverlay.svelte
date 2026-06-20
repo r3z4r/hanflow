@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { navigating } from '$app/state';
+	import { parsing } from '$lib/utils/parsing.svelte';
 
-	let isNavigating = $derived(navigating.to !== null);
+	// Cover both the LLM parse (form action) and the redirect navigation to /canvas.
+	let show = $derived(navigating.to !== null || parsing.active);
+	let caption = $derived(parsing.active ? 'Analysing your sentence…' : '');
 </script>
 
-{#if isNavigating}
+{#if show}
 	<div class="loading-overlay" role="status" aria-live="polite" aria-label="Loading">
 		<div class="skeleton-stage">
 			<div class="skeleton-block skeleton-block--lg"></div>
@@ -12,6 +15,9 @@
 			<div class="skeleton-block skeleton-block--md"></div>
 			<div class="skeleton-block skeleton-block--sm"></div>
 		</div>
+		{#if caption}
+			<p class="loading-caption">{caption}</p>
+		{/if}
 	</div>
 {/if}
 
@@ -25,10 +31,17 @@
 		/* above NavBar (z-index: 100) so the overlay covers the page content */
 		z-index: 200;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		gap: 1.5rem;
 		background: var(--color-bg-canvas);
+	}
+
+	.loading-caption {
+		margin: 0;
+		font-size: 0.9375rem;
+		color: var(--color-text-secondary);
 	}
 
 	.skeleton-stage {
