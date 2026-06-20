@@ -84,6 +84,19 @@ Bridge edges set `zIndex: 1001` so their `EdgeLabel` (which inherits the edge's 
 paints above the node boxes — xyflow renders the edge-labels container *before* the
 nodes container, so without it the relation label sits under the nodes.
 
+## Accessibility & motion
+
+- Nodes are Tab-focusable (xyflow default) and get an `ariaLabel` (`"<value>, <gloss>"`)
+  in `buildNodes`; a `:global(.svelte-flow__node:focus-visible)` outline (TopologyCanvas)
+  shows keyboard focus.
+- **Keyboard selection sync:** xyflow's Enter/Space sets `node.selected` but does *not*
+  fire `onnodeclick`, so `TokenNode` has a small `$effect` that calls
+  `state.selectToken(id)` whenever its `selected` prop is true — this is what opens the
+  sidebar for keyboard users. It looks redundant with the `onnodeclick` handler but
+  isn't; don't remove it.
+- `prefers-reduced-motion` disables the bridge dash (`.bridge-edge-path` in `app.css`),
+  node hover transform, sidebar slide, and the flow-area shift.
+
 ## Conjugation expansion gotcha
 
 `ConjugationExpansion.svelte` calls `useUpdateNodeInternals()` inside an `$effect` on

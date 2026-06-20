@@ -78,6 +78,12 @@
     transform: translateX(0);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .deep-context-sidebar {
+      transition: none;
+    }
+  }
+
   .sidebar-header {
     flex-shrink: 0;
     display: flex;

@@ -109,3 +109,15 @@ a:hover {
 @keyframes dash {
   to { stroke-dashoffset: -9; }
 }
+
+/* Animated particle-bridge edge. Defined globally (applied to a path inside a
+   child component) so prefers-reduced-motion can disable the marching dashes. */
+.bridge-edge-path {
+  animation: dash 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bridge-edge-path {
+    animation: none;
+  }
+}

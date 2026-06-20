@@ -78,6 +78,12 @@
     transform: translateY(0);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-sheet {
+      transition: none;
+    }
+  }
+
   .sidebar-header {
     flex-shrink: 0;
     display: flex;

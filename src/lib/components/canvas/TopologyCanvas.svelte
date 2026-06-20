@@ -166,4 +166,17 @@
   :global(.svelte-flow__controls-button svg) {
     fill: var(--color-text-secondary);
   }
+
+  /* Visible keyboard focus ring on nodes (xyflow makes them Tab-focusable). */
+  :global(.svelte-flow__node:focus-visible) {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
+    border-radius: var(--radius-node);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-area {
+      transition: none;
+    }
+  }
 </style>

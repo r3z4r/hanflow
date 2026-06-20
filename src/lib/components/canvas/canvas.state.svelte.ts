@@ -25,6 +25,7 @@ function buildNodes(parsedSentence: ParsedSentence): Node<CanvasNodeData>[] {
     id: token.id,
     type: token.type, // matches nodeTypes key in TopologyCanvas
     position: { x: token.position * 160, y: 200 },
+    ariaLabel: `${token.value}, ${token.gloss}`, // screen-reader announcement per node
     data: {
       token,
       isSelected: false,
