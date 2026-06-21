@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { enhance } from '$app/forms';
   import { recents } from '$lib/utils/recents.svelte';
   import { parsing } from '$lib/utils/parsing.svelte';
@@ -39,8 +39,11 @@
   let clientError = $derived(validate(value));
 
   // Fill the input with a suggested sentence and analyse it in one tap.
-  function runSuggestion(sentence: string) {
+  // Await tick() so the bound value reaches the textarea's DOM before submit —
+  // otherwise the form serializes an empty field and the server rejects it.
+  async function runSuggestion(sentence: string) {
     value = sentence;
+    await tick();
     formEl.requestSubmit();
   }
 </script>
