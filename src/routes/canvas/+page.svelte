@@ -1,8 +1,21 @@
 <script lang="ts">
 	import type { ParsedSentence } from '$lib/schemas/sentence';
 	import TopologyCanvas from '$lib/components/canvas/TopologyCanvas.svelte';
+	import SpeakButton from '$lib/components/ui/SpeakButton.svelte';
+	import DisplayOptions from '$lib/components/ui/DisplayOptions.svelte';
+	import ReportModal from '$lib/components/ui/ReportModal.svelte';
+	import ShareButton from '$lib/components/ui/ShareButton.svelte';
+	import FavoriteButton from '$lib/components/ui/FavoriteButton.svelte';
 
-	let { data }: { data: { parsedSentence: ParsedSentence } } = $props();
+	let {
+		data
+	}: {
+		data: {
+			parsedSentence: ParsedSentence;
+			hash: string;
+			favorite: { id: string; isFavorited: boolean } | null;
+		};
+	} = $props();
 </script>
 
 <svelte:head>
@@ -11,8 +24,26 @@
 
 <div class="canvas-page">
 	<div class="canvas-header">
-		<a href="/" class="back-link">← New sentence</a>
-		<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
+		<a href="/" class="back-link">←<span class="back-text"> New sentence</span></a>
+		<span class="header-divider" aria-hidden="true"></span>
+		<div class="sentence-block">
+			<h1 class="sentence-heading">{data.parsedSentence.originalText}</h1>
+			{#if data.parsedSentence.translation}
+				<p class="sentence-translation">{data.parsedSentence.translation}</p>
+			{/if}
+		</div>
+		<div class="sentence-actions">
+			<SpeakButton
+				text={data.parsedSentence.originalText}
+				label="Play pronunciation of the full sentence"
+			/>
+			<DisplayOptions />
+			<ShareButton hash={data.hash} />
+			{#if data.favorite}
+				<FavoriteButton historyId={data.favorite.id} isFavorited={data.favorite.isFavorited} />
+			{/if}
+			<ReportModal sentenceText={data.parsedSentence.originalText} />
+		</div>
 	</div>
 	<div class="canvas-area">
 		<TopologyCanvas parsedSentence={data.parsedSentence} />
@@ -47,6 +78,21 @@
 		color: var(--color-text-primary);
 	}
 
+	.header-divider {
+		align-self: stretch;
+		width: 1px;
+		background: var(--color-edge);
+		flex-shrink: 0;
+	}
+
+	.sentence-block {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+
 	.sentence-heading {
 		font-size: 1.125rem;
 		font-weight: 600;
@@ -55,6 +101,32 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.sentence-translation {
+		font-size: 0.875rem;
+		font-weight: 400;
+		color: var(--color-text-secondary);
+		margin: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.sentence-actions {
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	@media (max-width: 767px) {
+		/* Reclaim width for the sentence + action icons on small screens. */
+		.back-text {
+			display: none;
+		}
 	}
 
 	.canvas-area {

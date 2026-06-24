@@ -27,7 +27,8 @@
   {id}
   path={edgePath}
   {markerEnd}
-  style="stroke: var(--color-node-particle); stroke-width: 2; stroke-dasharray: 6 3; animation: dash 1s linear infinite;"
+  class="bridge-edge-path"
+  style="stroke: var(--color-node-particle); stroke-width: 2; stroke-dasharray: 6 3;"
 />
 
 {#if data?.relationLabel}

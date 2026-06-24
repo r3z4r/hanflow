@@ -74,6 +74,7 @@ export type GlossaryEntry = z.infer<typeof GlossaryEntrySchema>;
 
 export const ParsedSentenceSchema = z.object({
   originalText: z.string(),
+  translation: z.string().optional(), // natural full-sentence English translation
   tokens: z.array(TokenSchema),
   particleBridges: z.array(ParticleBridgeSchema),
   phoneticNotes: z.array(PhoneticNoteSchema),

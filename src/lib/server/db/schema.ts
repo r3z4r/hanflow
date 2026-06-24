@@ -83,14 +83,32 @@ export const sentenceHistory = pgTable(
 	]
 );
 
+export const parseFeedback = pgTable(
+	'parse_feedback',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
+		sentenceHash: text('sentence_hash').notNull(),
+		sentenceText: text('sentence_text').notNull(),
+		reason: text('reason'),
+		createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
+	},
+	(table) => [index('parse_feedback_hash_idx').on(table.sentenceHash)]
+);
+
 // ── Relations ─────────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ many }) => ({
 	accounts: many(accounts),
 	sessions: many(sessions),
-	sentenceHistory: many(sentenceHistory)
+	sentenceHistory: many(sentenceHistory),
+	parseFeedback: many(parseFeedback)
 }));
 
 export const sentenceHistoryRelations = relations(sentenceHistory, ({ one }) => ({
 	user: one(users, { fields: [sentenceHistory.userId], references: [users.id] })
+}));
+
+export const parseFeedbackRelations = relations(parseFeedback, ({ one }) => ({
+	user: one(users, { fields: [parseFeedback.userId], references: [users.id] })
 }));

@@ -1,16 +1,13 @@
 <script lang="ts">
 	import '../app.css';
 	import NavBar from '$lib/components/ui/NavBar.svelte';
-	import favicon from '$lib/assets/favicon.svg';
+	import LoadingOverlay from '$lib/components/ui/LoadingOverlay.svelte';
 
 	let { children, data } = $props();
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
 <NavBar session={data.session} />
+<LoadingOverlay />
 
 <main>
 	{@render children()}

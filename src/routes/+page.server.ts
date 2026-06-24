@@ -2,12 +2,14 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { isHangulOnly } from '$lib/server/korean';
 import { hashSentence } from '$lib/utils/hash';
-import { redis } from '$lib/server/redis';
+import { cacheGet, cacheSet } from '$lib/server/redis';
+import { db } from '$lib/server/db';
+import { sentenceHistory } from '$lib/server/db/schema';
 import { parseSentence } from '$lib/server/llm/parse';
 import { ParsedSentenceSchema } from '$lib/schemas/sentence';
 
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, locals }) => {
     const data = await request.formData();
     const sentence = (data.get('sentence') as string | null)?.trim() ?? '';
 
@@ -22,9 +24,9 @@ export const actions: Actions = {
     const hash = await hashSentence(sentence);
     const cacheKey = `hanflow:parsed:${hash}`;
 
-    // Cache check
+    // Cache check (fail-soft: a Redis outage is treated as a miss, not an error)
     let parsed;
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) {
       try {
         const result = ParsedSentenceSchema.safeParse(JSON.parse(cached));
@@ -37,9 +39,25 @@ export const actions: Actions = {
       try {
         parsed = await parseSentence(sentence);
       } catch {
-        return fail(500, { error: 'Failed to analyse sentence. Please try again.' });
+        return fail(500, {
+          error: "We couldn't analyse that sentence right now. Please try again in a moment.",
+        });
       }
-      await redis.setex(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(parsed));
+      await cacheSet(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(parsed));
+    }
+
+    const session = await locals.auth();
+    if (session?.user?.id) {
+      try {
+        await db.insert(sentenceHistory).values({
+          userId: session.user.id,
+          sentenceHash: hash,
+          sentenceText: sentence,
+          parsedResult: parsed,
+        });
+      } catch (err) {
+        console.error('Failed to persist sentence history:', err);
+      }
     }
 
     // Store only the hash — the canvas route re-fetches from Redis to avoid the 4KB cookie limit

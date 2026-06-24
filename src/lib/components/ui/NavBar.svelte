@@ -90,7 +90,7 @@
 	}
 
 	.brand-logo {
-		height: 28px;
+		height: 64px;
 		width: auto;
 		object-fit: contain;
 	}
