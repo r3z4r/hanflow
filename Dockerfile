@@ -57,6 +57,11 @@ RUN pnpm install --prod --frozen-lockfile
 
 COPY --from=build /app/build ./build
 
+# Migrations are applied at deploy time by scripts/migrate.js (Railway preDeployCommand),
+# which needs the generated SQL + journal present in the prod image.
+COPY drizzle/migrations ./drizzle/migrations
+COPY scripts ./scripts
+
 EXPOSE 3000
 
 CMD ["node", "build/index.js"]
