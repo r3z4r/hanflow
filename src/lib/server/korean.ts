@@ -13,7 +13,7 @@ export function isHangulOnly(text: string): boolean {
 export function normalizeInput(raw: string): string {
 	return raw
 		.normalize('NFC')
-		.replace(/[\x00-\x09\x0b-\x1f\x7f\u200b-\u200d\ufeff]/g, '') // control + zero-width (preserves newlines)
+		.replace(/[\x00-\x08\x0b-\x1f\x7f\u200b-\u200d\ufeff]/g, '') // control + zero-width (preserves newlines and tabs)
 		.replace(/[！-～]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0)) // full-width ASCII
 		.replace(/　/g, ' ') // ideographic space
 		.replace(/[ \t]+/g, ' ')

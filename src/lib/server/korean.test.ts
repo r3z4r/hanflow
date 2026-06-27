@@ -25,6 +25,10 @@ describe('normalizeInput', () => {
 	it('returns empty string for whitespace-only input', () => {
 		expect(normalizeInput('   \n  ')).toBe('');
 	});
+
+	it('collapses tabs to a single space', () => {
+		expect(normalizeInput('안녕\t하세요')).toBe('안녕 하세요');
+	});
 });
 
 describe('containsHangul', () => {
