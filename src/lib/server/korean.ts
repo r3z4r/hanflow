@@ -21,3 +21,14 @@ export function normalizeInput(raw: string): string {
 		.replace(/\n{2,}/g, '\n')
 		.trim();
 }
+
+const HAS_HANGUL_RE = /[가-힣ㄱ-ㆎ]/u;
+
+/**
+ * The input gate for analysis: accept anything containing at least some Hangul.
+ * Mixed/messy text passes; pure non-Korean is handled with a soft hint upstream
+ * (not a hard rejection styled as an error).
+ */
+export function containsHangul(text: string): boolean {
+	return HAS_HANGUL_RE.test(text);
+}

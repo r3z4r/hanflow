@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeInput } from './korean';
+import { normalizeInput, containsHangul } from './korean';
 
 describe('normalizeInput', () => {
 	it('trims and collapses internal spaces', () => {
@@ -24,5 +24,27 @@ describe('normalizeInput', () => {
 
 	it('returns empty string for whitespace-only input', () => {
 		expect(normalizeInput('   \n  ')).toBe('');
+	});
+});
+
+describe('containsHangul', () => {
+	it('is true for pure Korean', () => {
+		expect(containsHangul('안녕하세요')).toBe(true);
+	});
+
+	it('is true for mixed Korean + Latin + digits', () => {
+		expect(containsHangul('K-pop 좋아요 2025')).toBe(true);
+	});
+
+	it('is true for standalone jamo', () => {
+		expect(containsHangul('ㅋㅋ')).toBe(true);
+	});
+
+	it('is false for pure non-Korean', () => {
+		expect(containsHangul('hello world 123')).toBe(false);
+	});
+
+	it('is false for empty input', () => {
+		expect(containsHangul('')).toBe(false);
 	});
 });
