@@ -98,7 +98,7 @@ ASPECT_SCHEMAS: Record<Aspect, ZodTypeAny> = {
 }
 ```
 
-> Note: `PhoneticPhenomenonSchema` already exists in `sentence.ts` but is not currently exported — export it for reuse. `GlossaryEntrySchema` references `tokenId`; in the aspect world the glossary is keyed by headword and its `tokenId` is advisory (the glossary aspect renders standalone), so no cross-aspect dependency is introduced at render time.
+> Note: all reused sub-schemas (`TokenTypeSchema`, `ParticleBridgeSchema`, `GrammarNoteSchema`, `ConjugationChainSchema`, `GlossaryEntrySchema`, `PhoneticPhenomenonSchema`) are **already exported** from `sentence.ts`, so `aspects.ts` only imports — no `sentence.ts` change is needed. `GlossaryEntrySchema` references `tokenId`; in the aspect world the glossary is keyed by headword and its `tokenId` is advisory (the glossary aspect renders standalone), so no cross-aspect dependency is introduced at render time.
 
 ## 4. Prompt builders — `src/lib/server/llm/prompts/`
 
@@ -142,11 +142,11 @@ Validation uses `ASPECT_SCHEMAS[aspect].safeParse`; a corrupt cached entry is tr
 
 | File | Responsibility |
 |---|---|
-| `src/lib/schemas/aspects.ts` (create) | Per-aspect Zod schemas + `ASPECT_SCHEMAS` map + inferred types |
-| `src/lib/schemas/sentence.ts` (modify) | Export `PhoneticPhenomenonSchema` (currently unexported) for reuse |
+| `src/lib/schemas/aspects.ts` (create) | Per-aspect Zod schemas + `ASPECT_SCHEMAS` map + inferred types (imports already-exported sub-schemas from `sentence.ts`) |
 | `src/lib/server/llm/prompts/translation.ts` `structure.ts` `pronunciation.ts` `glossary.ts` `index.ts` (create) | Per-aspect prompt builders + dispatcher |
+| `src/lib/server/llm/fallback.ts` (create) | `tryWithFallback` provider-fallback helper |
 | `src/lib/server/llm/parse.ts` (modify) | Add `parseAspect`; keep `parseSentence` |
-| `src/lib/server/aspect-cache.ts` (create) | `getAspect` read-through cache |
+| `src/lib/server/aspect-cache.ts` (create) | `resolveAspect` orchestrator + `getAspect` read-through wrapper |
 | `*.test.ts` colocated | Unit tests for schemas, prompt builders, `getAspect` orchestration |
 
 ## 8. Self-review checklist (for the plan author)
