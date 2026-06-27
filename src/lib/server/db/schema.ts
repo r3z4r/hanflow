@@ -96,13 +96,65 @@ export const parseFeedback = pgTable(
 	(table) => [index('parse_feedback_hash_idx').on(table.sentenceHash)]
 );
 
+export const documents = pgTable(
+	'document',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
+		docHash: text('doc_hash').notNull(),
+		rawInput: text('raw_input').notNull(),
+		normalizedInput: text('normalized_input').notNull(),
+		defaultMode: text('default_mode').notNull(),
+		isFavorited: boolean('is_favorited').default(false).notNull(),
+		createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
+	},
+	(table) => [
+		index('document_user_id_idx').on(table.userId),
+		index('document_hash_idx').on(table.docHash)
+	]
+);
+
+export const segments = pgTable(
+	'segment',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		documentId: uuid('document_id')
+			.notNull()
+			.references(() => documents.id, { onDelete: 'cascade' }),
+		segHash: text('seg_hash').notNull(),
+		segmentText: text('segment_text').notNull(),
+		unitType: text('unit_type').notNull(),
+		ordinal: integer('ordinal').notNull(),
+		isFavorited: boolean('is_favorited').default(false).notNull()
+	},
+	(table) => [
+		index('segment_document_ordinal_idx').on(table.documentId, table.ordinal),
+		index('segment_hash_idx').on(table.segHash)
+	]
+);
+
+// Persistent (cold) per-aspect parse cache, keyed by segment hash + aspect so it
+// is reused across documents. Redis is the hot mirror.
+export const segmentAspects = pgTable(
+	'segment_aspect',
+	{
+		segHash: text('seg_hash').notNull(),
+		aspect: text('aspect').notNull(),
+		result: jsonb('result').notNull(),
+		model: text('model'),
+		createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
+	},
+	(table) => [primaryKey({ columns: [table.segHash, table.aspect] })]
+);
+
 // ── Relations ─────────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ many }) => ({
 	accounts: many(accounts),
 	sessions: many(sessions),
 	sentenceHistory: many(sentenceHistory),
-	parseFeedback: many(parseFeedback)
+	parseFeedback: many(parseFeedback),
+	documents: many(documents)
 }));
 
 export const sentenceHistoryRelations = relations(sentenceHistory, ({ one }) => ({
@@ -111,4 +163,13 @@ export const sentenceHistoryRelations = relations(sentenceHistory, ({ one }) => 
 
 export const parseFeedbackRelations = relations(parseFeedback, ({ one }) => ({
 	user: one(users, { fields: [parseFeedback.userId], references: [users.id] })
+}));
+
+export const documentsRelations = relations(documents, ({ one, many }) => ({
+	user: one(users, { fields: [documents.userId], references: [users.id] }),
+	segments: many(segments)
+}));
+
+export const segmentsRelations = relations(segments, ({ one }) => ({
+	document: one(documents, { fields: [segments.documentId], references: [documents.id] })
 }));
