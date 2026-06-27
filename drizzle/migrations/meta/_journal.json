@@ -15,6 +15,13 @@
       "when": 1781982468787,
       "tag": "0001_tidy_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782585389292,
+      "tag": "0002_sudden_stepford_cuckoos",
+      "breakpoints": true
     }
   ]
 }
