@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import { MODE_ASPECTS, type Aspect, type Mode } from '$lib/schemas/analysis';
 import type { AspectResult } from '$lib/schemas/aspects';
 
@@ -15,6 +16,7 @@ export function createResultsState(docId: string, initialMode: Mode) {
 	let sources: EventSource[] = [];
 
 	function open(aspects: Aspect[]) {
+		if (!browser) return;   // EventSource is browser-only
 		const fresh = aspects.filter((a) => !requested.has(a));
 		if (fresh.length === 0) return;
 		fresh.forEach((a) => requested.add(a));
@@ -22,7 +24,14 @@ export function createResultsState(docId: string, initialMode: Mode) {
 		const es = new EventSource(`/api/analyze?doc=${docId}&aspects=${fresh.join(',')}`);
 		sources.push(es);
 		es.addEventListener('aspect', (e) => {
-			const { ordinal, aspect, result } = JSON.parse((e as MessageEvent).data);
+			let payload;
+			try {
+				payload = JSON.parse((e as MessageEvent).data);
+			} catch {
+				console.warn('[analyze] unparseable aspect event');
+				return;
+			}
+			const { ordinal, aspect, result } = payload;
 			byOrdinal[ordinal] = { ...(byOrdinal[ordinal] ?? {}), [aspect as Aspect]: result };
 		});
 		es.addEventListener('done', () => es.close());
