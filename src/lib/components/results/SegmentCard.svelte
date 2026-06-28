@@ -44,6 +44,8 @@
 
 	{#if translation}
 		<p class="translation">{translation.translation}</p>
+	{:else if mode === 'translate'}
+		<p class="loading">Loading translation…</p>
 	{/if}
 
 	{#if showPronunciation}
@@ -63,7 +65,7 @@
 
 	{#if showStructure}
 		{#if parsed}
-			<button type="button" class="expand-toggle" onclick={() => (expanded = !expanded)}>
+			<button type="button" class="expand-toggle" aria-expanded={expanded} onclick={() => (expanded = !expanded)}>
 				{expanded ? 'Hide' : 'Show'} breakdown
 			</button>
 			{#if expanded}
