@@ -16,26 +16,31 @@ export const actions: Actions = {
     if (!built.ok) return fail(422, { error: built.hint });
 
     const session = await locals.auth();
-    const [doc] = await db
-      .insert(documents)
-      .values({
-        userId: session?.user?.id ?? null,
-        docHash: built.doc.docHash,
-        rawInput: raw,
-        normalizedInput: built.doc.normalized,
-        defaultMode: mode
-      })
-      .returning({ id: documents.id });
+    let doc: { id: string };
+    try {
+      [doc] = await db
+        .insert(documents)
+        .values({
+          userId: session?.user?.id ?? null,
+          docHash: built.doc.docHash,
+          rawInput: raw,
+          normalizedInput: built.doc.normalized,
+          defaultMode: mode
+        })
+        .returning({ id: documents.id });
 
-    await db.insert(segments).values(
-      built.doc.segments.map((s) => ({
-        documentId: doc.id,
-        segHash: s.segHash,
-        segmentText: s.segmentText,
-        unitType: s.unitType,
-        ordinal: s.ordinal
-      }))
-    );
+      await db.insert(segments).values(
+        built.doc.segments.map((s) => ({
+          documentId: doc.id,
+          segHash: s.segHash,
+          segmentText: s.segmentText,
+          unitType: s.unitType,
+          ordinal: s.ordinal
+        }))
+      );
+    } catch {
+      return fail(500, { error: "We couldn't save your analysis. Please try again." });
+    }
 
     redirect(303, `/d/${doc.id}?mode=${mode}`);
   }
