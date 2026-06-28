@@ -14,6 +14,9 @@ export const GET: RequestHandler = async ({ url }) => {
 	const docId = url.searchParams.get('doc');
 	if (!docId) error(400, 'missing doc');
 
+	const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+	if (!UUID_RE.test(docId)) error(404, 'document not found');
+
 	const docRows = await db
 		.select({ id: documents.id })
 		.from(documents)
@@ -42,8 +45,13 @@ export const GET: RequestHandler = async ({ url }) => {
 	const stream = new ReadableStream<Uint8Array>({
 		async start(controller) {
 			const encoder = new TextEncoder();
-			const send = (event: string, data: unknown) =>
-				controller.enqueue(encoder.encode(sseFrame(event, data)));
+			const send = (event: string, data: unknown) => {
+				try {
+					controller.enqueue(encoder.encode(sseFrame(event, data)));
+				} catch {
+					/* client disconnected — stream cancelled; nothing to flush */
+				}
+			};
 
 			let cursor = 0;
 			async function worker() {
@@ -66,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 			await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
 			send('done', {});
-			controller.close();
+			try { controller.close(); } catch { /* already closed/cancelled */ }
 		}
 	});
 
