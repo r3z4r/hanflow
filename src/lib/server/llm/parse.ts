@@ -39,14 +39,14 @@ export async function parseSentence(sentence: string): Promise<ParsedSentence> {
  */
 export function parseAspect<A extends Aspect>(aspect: A, text: string): Promise<AspectResultMap[A]>;
 export async function parseAspect(aspect: Aspect, text: string): Promise<AspectResult> {
-	const { system, prompt } = buildAspectPrompt(aspect, text);
-	const schema = ASPECT_SCHEMAS[aspect];
-	const run = (model: typeof primaryModel | typeof fallbackModel) =>
-		generateObject({ model, schema, system, prompt, temperature: 0.1 }).then(
-			(r) => r.object as AspectResult
-		);
-	return tryWithFallback(
-		() => run(primaryModel),
-		() => run(fallbackModel)
-	);
+  const { system, prompt } = buildAspectPrompt(aspect, text);
+  const schema = ASPECT_SCHEMAS[aspect];
+  const run = (model: typeof primaryModel | typeof fallbackModel) =>
+    generateObject({ model, schema, system, prompt, temperature: 0.1 }).then(
+      (r) => r.object as AspectResult
+    );
+  return tryWithFallback(
+    () => run(primaryModel),
+    () => run(fallbackModel)
+  );
 }
