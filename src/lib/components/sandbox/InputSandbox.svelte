@@ -27,16 +27,22 @@
     mounted = true;
   });
 
-  // Korean Unicode: syllables (가-힣) + jamo (ㄱ-ㆎ) + space + punctuation
-  const HANGUL_RE = /^[가-힣ㄱ-ㆎ \p{P}]+$/u;
-
-  function validate(text: string) {
+  // Accept anything containing some Hangul; sanitization happens server-side.
+  const HANGUL_RE = /[가-힣ㄱ-ㆎ]/u;
+  function hint(text: string) {
     const t = text.trim();
     if (!t) return '';
-    return HANGUL_RE.test(t) ? '' : 'Please enter Korean text only (한글)';
+    return HANGUL_RE.test(t) ? '' : 'Enter some Korean (한글) to analyze';
   }
+  let clientHint = $derived(hint(value));
 
-  let clientError = $derived(validate(value));
+  const MODES = [
+    { id: 'full', label: 'Full' },
+    { id: 'breakdown', label: 'Breakdown' },
+    { id: 'pronounce', label: 'Pronounce' },
+    { id: 'translate', label: 'Translate' }
+  ];
+  let mode = $state('full');
 
   // Fill the input with a suggested sentence and analyse it in one tap.
   // Await tick() so the bound value reaches the textarea's DOM before submit —
@@ -71,24 +77,40 @@
         placeholder="한국어 문장을 입력하세요… (예: 저는 학교에 갑니다)"
         rows="3"
         class="sentence-input"
-        class:has-error={!!clientError}
+        class:has-error={!!clientHint}
         aria-label="Korean sentence input"
         autocomplete="off"
         autocapitalize="off"
         spellcheck="false"
       ></textarea>
 
-      {#if clientError}
-        <p class="error-msg" role="alert">{clientError}</p>
+      {#if clientHint}
+        <p class="error-msg" role="alert">{clientHint}</p>
       {:else if actionData?.error}
         <p class="error-msg" role="alert">{actionData.error}</p>
       {/if}
     </div>
 
+    <input type="hidden" name="mode" value={mode} />
+
+    <div class="mode-chips" role="group" aria-label="Analysis mode">
+      {#each MODES as m (m.id)}
+        <button
+          type="button"
+          class="mode-chip"
+          class:selected={mode === m.id}
+          aria-pressed={mode === m.id}
+          onclick={() => (mode = m.id)}
+        >
+          {m.label}
+        </button>
+      {/each}
+    </div>
+
     <button
       type="submit"
       class="submit-btn"
-      disabled={submitting || !!clientError || !value.trim()}
+      disabled={submitting || !value.trim()}
     >
       {submitting ? 'Analysing…' : actionData?.error ? 'Try again' : 'Analyse'}
     </button>
@@ -247,6 +269,41 @@
   }
 
   .chip:active {
+    transform: scale(0.96);
+  }
+
+  .mode-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .mode-chip {
+    padding: 0.375rem 0.75rem;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-edge);
+    border-radius: 100px;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+  }
+
+  .mode-chip:hover {
+    border-color: var(--color-accent-primary);
+    color: var(--color-text-primary);
+    background: var(--color-bg-elevated);
+  }
+
+  .mode-chip.selected {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: #fff;
+  }
+
+  .mode-chip:active {
     transform: scale(0.96);
   }
 

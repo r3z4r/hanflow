@@ -1,74 +1,42 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { isHangulOnly } from '$lib/server/korean';
-import { hashSentence } from '$lib/utils/hash';
-import { cacheGet, cacheSet } from '$lib/server/redis';
+import { ModeSchema } from '$lib/schemas/analysis';
+import { buildDocumentInput } from '$lib/server/document';
 import { db } from '$lib/server/db';
-import { sentenceHistory } from '$lib/server/db/schema';
-import { parseSentence } from '$lib/server/llm/parse';
-import { ParsedSentenceSchema } from '$lib/schemas/sentence';
+import { documents, segments } from '$lib/server/db/schema';
 
 export const actions: Actions = {
-  default: async ({ request, cookies, locals }) => {
+  default: async ({ request, locals }) => {
     const data = await request.formData();
-    const sentence = (data.get('sentence') as string | null)?.trim() ?? '';
+    const raw = (data.get('sentence') as string | null) ?? '';
+    const modeParse = ModeSchema.safeParse(data.get('mode'));
+    const mode = modeParse.success ? modeParse.data : 'full';
 
-    if (!sentence) {
-      return fail(400, { error: 'Please enter a Korean sentence.' });
-    }
-
-    if (!isHangulOnly(sentence)) {
-      return fail(422, { error: 'Please enter Korean text only (한글).' });
-    }
-
-    const hash = await hashSentence(sentence);
-    const cacheKey = `hanflow:parsed:${hash}`;
-
-    // Cache check (fail-soft: a Redis outage is treated as a miss, not an error)
-    let parsed;
-    const cached = await cacheGet(cacheKey);
-    if (cached) {
-      try {
-        const result = ParsedSentenceSchema.safeParse(JSON.parse(cached));
-        if (result.success) parsed = result.data;
-      } catch { /* corrupted cache entry — fall through to LLM */ }
-    }
-
-    // LLM call on miss
-    if (!parsed) {
-      try {
-        parsed = await parseSentence(sentence);
-      } catch {
-        return fail(500, {
-          error: "We couldn't analyse that sentence right now. Please try again in a moment.",
-        });
-      }
-      await cacheSet(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(parsed));
-    }
+    const built = await buildDocumentInput(raw, mode);
+    if (!built.ok) return fail(422, { error: built.hint });
 
     const session = await locals.auth();
-    if (session?.user?.id) {
-      try {
-        await db.insert(sentenceHistory).values({
-          userId: session.user.id,
-          sentenceHash: hash,
-          sentenceText: sentence,
-          parsedResult: parsed,
-        });
-      } catch (err) {
-        console.error('Failed to persist sentence history:', err);
-      }
-    }
+    const [doc] = await db
+      .insert(documents)
+      .values({
+        userId: session?.user?.id ?? null,
+        docHash: built.doc.docHash,
+        rawInput: raw,
+        normalizedInput: built.doc.normalized,
+        defaultMode: mode
+      })
+      .returning({ id: documents.id });
 
-    // Store only the hash — the canvas route re-fetches from Redis to avoid the 4KB cookie limit
-    cookies.set('hf_key', hash, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24,
-      sameSite: 'lax',
-    });
+    await db.insert(segments).values(
+      built.doc.segments.map((s) => ({
+        documentId: doc.id,
+        segHash: s.segHash,
+        segmentText: s.segmentText,
+        unitType: s.unitType,
+        ordinal: s.ordinal
+      }))
+    );
 
-    redirect(303, '/canvas');
-  },
+    redirect(303, `/d/${doc.id}?mode=${mode}`);
+  }
 };
