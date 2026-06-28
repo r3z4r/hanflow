@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { onDestroy, untrack } from 'svelte';
 	import SegmentCard from '$lib/components/results/SegmentCard.svelte';
 	import { createResultsState } from '$lib/components/results/results.state.svelte';
 	import { ModeSchema, type Mode } from '$lib/schemas/analysis';
@@ -17,8 +18,11 @@
 	const urlMode = ModeSchema.safeParse(page.url.searchParams.get('mode'));
 	let mode = $state<Mode>(urlMode.success ? urlMode.data : 'full');
 
-	const results = createResultsState();
-	// Task 9 wires the live stream into `results` (reacting to `mode`).
+	const results = createResultsState(untrack(() => data.document.id), untrack(() => mode));
+	$effect(() => {
+		results.requestMode(mode);
+	});
+	onDestroy(() => results.close());
 </script>
 
 <svelte:head><title>{data.document.rawInput} — HanFlow</title></svelte:head>
