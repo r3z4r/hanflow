@@ -3,8 +3,11 @@ import { eq, asc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { documents, segments } from '$lib/server/db/schema';
+import { isUuid } from '$lib/utils/uuid';
 
 export const load: PageServerLoad = async ({ params }) => {
+	if (!isUuid(params.docId)) redirect(303, '/');
+
 	const docRows = await db
 		.select({
 			id: documents.id,

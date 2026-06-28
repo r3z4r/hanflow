@@ -7,15 +7,14 @@ import { resolveAspectSet } from '$lib/server/analyze-aspects';
 import { sseFrame } from '$lib/server/sse';
 import { getAspect } from '$lib/server/aspect-cache';
 import { parseAspect } from '$lib/server/llm/parse';
+import { isUuid } from '$lib/utils/uuid';
 
 const CONCURRENCY = 4;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const docId = url.searchParams.get('doc');
 	if (!docId) error(400, 'missing doc');
-
-	const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-	if (!UUID_RE.test(docId)) error(404, 'document not found');
+	if (!isUuid(docId)) error(404, 'document not found');
 
 	const docRows = await db
 		.select({ id: documents.id })

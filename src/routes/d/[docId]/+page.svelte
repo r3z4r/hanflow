@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { onDestroy, untrack } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import SegmentCard from '$lib/components/results/SegmentCard.svelte';
 	import { createResultsState } from '$lib/components/results/results.state.svelte';
 	import { ModeSchema, type Mode } from '$lib/schemas/analysis';
@@ -15,10 +15,15 @@
 		{ id: 'translate', label: 'Translate' }
 	];
 
+	// Capture document values once at mount — id and defaultMode don't change during the
+	// page lifetime. Accessed inside an arrow function to satisfy Svelte's reactive-ref rules.
+	const { id: docId, defaultMode: rawDefaultMode } = (() => data.document)();
 	const urlMode = ModeSchema.safeParse(page.url.searchParams.get('mode'));
-	let mode = $state<Mode>(urlMode.success ? urlMode.data : 'full');
+	const docDefaultMode = ModeSchema.safeParse(rawDefaultMode);
+	const initialMode: Mode = urlMode.success ? urlMode.data : docDefaultMode.success ? docDefaultMode.data : 'full';
+	let mode = $state<Mode>(initialMode);
 
-	const results = createResultsState(untrack(() => data.document.id), untrack(() => mode));
+	const results = createResultsState(docId, initialMode);
 	$effect(() => {
 		results.requestMode(mode);
 	});

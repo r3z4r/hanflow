@@ -12,7 +12,7 @@ export const actions: Actions = {
     const modeParse = ModeSchema.safeParse(data.get('mode'));
     const mode = modeParse.success ? modeParse.data : 'full';
 
-    const built = await buildDocumentInput(raw, mode);
+    const built = await buildDocumentInput(raw);
     if (!built.ok) return fail(422, { error: built.hint });
 
     const session = await locals.auth();
