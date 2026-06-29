@@ -28,7 +28,7 @@ export const TokenSchema = z.object({
   id: z.string(),             // e.g. "tok_0"
   value: z.string(),          // surface Hangul
   type: TokenTypeSchema,
-  romanization: z.string(),   // Revised Romanization
+  romanization: z.string().optional(),   // Revised Romanization (absent in the aspect-based flow)
   gloss: z.string(),          // English gloss
   position: z.number().int().nonnegative(),
   conjugation: ConjugationChainSchema.optional(),
